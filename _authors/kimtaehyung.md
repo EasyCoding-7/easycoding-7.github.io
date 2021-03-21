@@ -3,7 +3,7 @@ name: taehyung
 username: Taehyubng Kim
 bio: "안녕하세요? C++ 개발자 김태형이라고 합니다. 😁 현업 개발자 이며 개발중 터득한 많은 정보를 업데이트할 예정입니다. 잘 부탁드립니다! 😘"
 site: ""
-avatar: johndoe.png
+avatar: taehyung.png
 email: taehyung77@naver.com
 social:
     - title: "github"
