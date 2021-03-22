@@ -9,7 +9,7 @@ category: ['C++', 'Quize']
 thumbnail: /assets/img/posts/hello.jpg
 #keywords: ['C++ 글올리기', 'kw-test1']
 usemathjax: false
-permalink: /blog/cpp/quize/array-min-jumps/
+permalink: /blog/cpp/Quize/array-min-jumps/
 ---
 
 ## Q
