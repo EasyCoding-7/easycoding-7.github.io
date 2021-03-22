@@ -1,13 +1,13 @@
 ---
 layout: page
 title: Qt
-permalink: /blog/categories/qt/
+permalink: /blog/categories/Qt/
 ---
 
 <h5> Posts by Category : {{ page.title }} </h5>
 
 <div class="card">
-{% for post in site.categories.jekyll %}
+{% for post in site.categories.Qt %}
  <li class="category-posts"><span>{{ post.date | date_to_string }}</span> &nbsp; <a href="{{ post.url }}">{{ post.title }}</a></li>
 {% endfor %}
 </div>
