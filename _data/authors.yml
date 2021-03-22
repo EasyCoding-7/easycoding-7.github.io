@@ -75,3 +75,9 @@ github-page:
    username: github-page
    avatar: github-page.png
    bio: "This is github-page author."
+
+Qt:
+   name: Qt
+   username: Qt
+   avatar: qt.svg
+   bio: "This is qt author."
