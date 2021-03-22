@@ -4,12 +4,12 @@ title:  "(C++ : Quize) Array Min Jumps"
 summary: ""
 author: C++
 date: '2021-03-22 0:00:00 +0530'
-category: ['C++', 'Quize']
+category: ['Cpp', 'Quize']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/hello.jpg
 #keywords: ['C++ 글올리기', 'kw-test1']
 usemathjax: false
-permalink: /blog/cpp/Quize/array-min-jumps/
+permalink: /blog/Quize/array-min-jumps/
 ---
 
 ## Q
