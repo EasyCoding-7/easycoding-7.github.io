@@ -63,3 +63,15 @@ taehyung:
         url: "https://www.youtube.com/channel/UCSfLBFFfNU9r6ihfei6VeJw"
       - title: "facebook"
         url: "https://www.facebook.com/sujay.kundu2"
+
+C++:
+   name: C++
+   username: C++
+   avatar: cpp.svg
+   bio: "This is cpp author."
+
+github-page:
+   name: github-page
+   username: github-page
+   avatar: github-page.png
+   bio: "This is github-page author."
