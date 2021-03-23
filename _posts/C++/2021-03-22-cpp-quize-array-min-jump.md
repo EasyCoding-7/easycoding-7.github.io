@@ -14,6 +14,8 @@ permalink: /blog/Quize/array-min-jumps/
 
 ## Q
 
+0번 배열에서 시작해서 해당 배열만큼 이동가능, 최소로 점프해서 이동가능한 점프수 체크
+
 ```
 Input: {3, 4, 2, 1, 1, 100}
 Output: 2
