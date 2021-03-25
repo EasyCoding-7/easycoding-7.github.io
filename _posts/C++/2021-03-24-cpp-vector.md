@@ -9,7 +9,7 @@ category: ['Cpp']
 thumbnail: /assets/img/posts/hello.jpg
 keywords: ['vector']
 usemathjax: false
-permalink: /blog/Quize/off-binary/
+permalink: /blog/cpp/vector/
 ---
 
 ## iterator 활용
