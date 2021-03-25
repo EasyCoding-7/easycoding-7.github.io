@@ -93,6 +93,69 @@ int main() {
 
 ---
 
+## append
+
+```cpp
+#include <iostream>
+using namespace std;
+ 
+int main() {
+	string hello {"Hello"};
+	hello.append(" world");
+	cout << "hello = " << hello << endl;		// hello = Hello world
+	string hello2 {"Hello"};
+	hello2.append("wow!!!!", 3, 2);				// hello2 = Hello!!
+	cout << "hello2 = " << hello2 << endl;
+
+	return 0;
+}
+```
+
+---
+
+## insert
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+	string hello { "hello" };
+	hello.insert(4, "eh");
+	hello.insert(6, 3, '.');
+	hello.insert(6, 1, '.');
+	cout << "hello = " << hello << endl;		// hello = helleh....o
+	return 0;
+}
+```
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+	string hello { "hello" };
+	hello.insert(4, "eh");			// helleho
+	cout << "1 : " << hello << endl;
+	hello.insert(6, 3, '.');		// helleh...o
+	cout << "2 : " << hello << endl;
+	hello.insert(6, 1, '.');		// helleh....o
+	cout << "3 : " << hello << endl;
+	
+	string dol {"Dolly"};		// oll
+	hello.insert(4, dol, 1, 3);		// hellolleh....o
+	cout << "4 : " << hello << endl;
+	size_t opos = hello.find('o');                                       
+	if (opos != string::npos)
+		hello.insert(opos, "OOO");
+	cout << "hello = " << hello << endl;
+
+	return 0;
+}
+```
+
+---
+
 ## char[] 보다 장점이 있나?
 
 ```cpp
