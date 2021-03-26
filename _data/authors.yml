@@ -81,3 +81,9 @@ Qt:
    username: Qt
    avatar: qt.png
    bio: "This is qt author."
+
+WebRTC:
+   name: WebRTC
+   username: WebRTC
+   avatar: webrtc.png
+   bio: "This is WebRTC author."
