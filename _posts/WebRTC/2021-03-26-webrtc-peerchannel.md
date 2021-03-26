@@ -15,6 +15,7 @@ permalink: /blog/WebRTC/peerchannel/
 ```cpp
 class PeerChannel {
  public:
+  // PeerChannel은 ChannelMember을 관리해주는 클래스라 생각하면 된다.
   typedef std::vector<ChannelMember*> Members;
 
   PeerChannel() {}
