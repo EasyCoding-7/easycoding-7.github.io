@@ -118,7 +118,7 @@ Start populating your blog by adding your .md files in _posts. devlopr-jekyll al
 layout: post
 title: Sample Post
 author: Sujay Kundu
-date: '2019-05-21 14:35:23 +0530'
+date: '2019-05-21 14:35:23 +0000'
 category:
         - jekyll
 summary: This is the summary for the sample post

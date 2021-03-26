@@ -3,7 +3,7 @@ layout: post
 title:  "(C++) String"
 summary: ""
 author: C++
-date: '2021-03-25 0:00:00 +0530'
+date: '2021-03-25 0:00:00 +0000'
 category: ['Cpp']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/hello.jpg
