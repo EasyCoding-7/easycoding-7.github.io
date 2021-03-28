@@ -135,3 +135,14 @@ void Graphics::ClearBuffer( float red,float green,float blue ) noexcept
 ```
 
 ![](/assets/img/posts/directx/dxd-basic-12-1.gif){:class="img-fluid"}
+
+이후에 포인터를 아래와 같이 관리하는데
+
+```cpp
+Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
+Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
+Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
+Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTarget;
+```
+
+MS용 unique_ptr이라 생각하자
