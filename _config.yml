@@ -36,7 +36,7 @@ typewrite-text: C++을 사랑하는 여러분😁 제 홈페이지에 오신걸 
 
 # Experiences
 author_work_experiences:
-            - company_name: NC Soft
+            - company_name: NCSoft
               company_logo: nc.png
               company_url: https://ncsoft.com
               designation: Software Engineer
