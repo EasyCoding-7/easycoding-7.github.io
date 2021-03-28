@@ -30,31 +30,37 @@ author_logo: profile.png
 author: Taehyung Kim
 author_bio: 안녕하세요? C++ 개발자 김태형이라고 합니다. 😁 현업 개발자 이며 개발중 터득한 많은 정보를 업데이트할 예정입니다. 잘 부탁드립니다! 😘
 author_email: "taehyeong77@naver.com"
-author_location: Korea, Seoul
-author_website_url: "https://sujaykundu.com"
+author_location: Korea, Pangyo
+author_website_url: "https://8bitscoding.github.io/"
 typewrite-text: C++을 사랑하는 여러분😁 제 홈페이지에 오신걸 환영합니다😊👍🤞
 
 # Experiences
 author_work_experiences:
-            - company_name: Google
-              company_logo: google.png
-              company_url: https://google.com
+            - company_name: NC Soft
+              company_logo: nc.png
+              company_url: https://ncsoft.com
               designation: Software Engineer
-              description: Worked on various Google Products
+              description: Real-Time-Streaming platform based on OBS(Open Broadcaster Software), WebRTC and Qt
               visibility: true
-            - company_name: Microsoft
-              company_logo: microsoft.png
-              company_url: https://microsoft.com
-              designation: Azure Developer
-              description: Worked on various Azure Cloud Products
+            - company_name: Hanwha Systems
+              company_logo: hanwha.png
+              company_url: https://www.hanwhasystems.com
+              designation: Software Engineer
+              description: Under water Robot Software base on ROS(Robot Operating System), MFC and Qt
+              visibility: true
+            - company_name: Samsung Thales
+              company_logo: samsung.png
+              company_url: https://www.hanwhasystems.com
+              designation: Software Engineer
+              description: Under water Robot Software base on ROS(Robot Operating System), MFC and Qt
               visibility: true
 
 # Education
 author_education_details:
-              - college_logo: mit.png
-                college_name: MIT
-                college_url: https://mit.org
-                college_degree: CS Engineer
+              - college_logo: cnu.png
+                college_name: Chungnam National University
+                college_url: https://cnu.ac.kr
+                college_degree: EE Engineer
                 description: Bachelor of Technology
                 visibility: true
 
@@ -72,16 +78,16 @@ author_project_details:
                 visibility: true
 
 # social links
-twitter_username: johndoe
+#twitter_username: johndoe
 github_username: EasyCoding-7
-facebook_username: johndoe
+#facebook_username: johndoe
 linkedin_username: johndoe
-behance_username: johndoe
-instagram_username: johndoe
-medium_username: johndoe
-telegram_username: johndoe
-dribbble_username: johndoe
-flickr_username: johndoe
+#behance_username: johndoe
+#instagram_username: johndoe
+#medium_username: johndoe
+#telegram_username: johndoe
+#dribbble_username: johndoe
+#flickr_username: johndoe
 
 #for comments ( we got Disqus and Hyvor Commenting, uncomment the one you want to use )
 
