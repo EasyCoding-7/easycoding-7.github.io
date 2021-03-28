@@ -28,7 +28,7 @@ urls:
 
 author_logo: profile.png
 author: Taehyung Kim
-author_bio: 안녕하세요? C++ 개발자 김태형이라고 합니다. 😁 현업 개발자 이며 개발중 터득한 많은 정보를 업데이트할 예정입니다. 잘 부탁드립니다! 😘
+author_bio: 안녕하세요? 8년차 현업 C++ 개발자 김태형이라고 합니다. 😁 많은 정보를 공유하고 싶습니다 👍 궁금하신 사항은 언제든 커멘트나 메일주시면 답변드리겠습니다. 😎
 author_email: "taehyeong77@naver.com"
 author_location: Korea, Pangyo
 author_website_url: "https://8bitscoding.github.io/"
@@ -95,13 +95,13 @@ linkedin_username: Taehyung Kim
 hyvor_talk_website_id: 476
 
 # wakatime username (coding activity)
-wakatime_username: sujaykundu777
+# wakatime_username: sujaykundu777
 
 # mailchimp embedded form url (newsletter):
-mailchimp_form_url: https://sujaykundu.us10.list-manage.com/subscribe/post?u=50bab1c85eae24ecfb0f68361&amp;id=3a2dd721d0
+#mailchimp_form_url: https://sujaykundu.us10.list-manage.com/subscribe/post?u=50bab1c85eae24ecfb0f68361&amp;id=3a2dd721d0
 
 # formspree (contact form)
-formspree_email: johndoe@gmail.com
+formspree_email: taehyeong77@naver.com
 
 # syntax highlighter
 markdown: kramdown
