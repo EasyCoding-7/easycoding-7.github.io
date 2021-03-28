@@ -1,5 +1,5 @@
 title: easycoding-7, for C++ developers
-subtitle: C++ 개발자에 의한 개발자를 위한 블로그
+subtitle: C++ 개발자에 의한 C++ 개발자를 위한 블로그
 description: >- # this means to ignore newlines until "baseurl:"
   #devlopr-jekyll is a beautiful Jekyll Theme Built For Developers, which is optimized for speed and readability.
 
@@ -40,19 +40,19 @@ author_work_experiences:
               company_logo: nc.png
               company_url: https://ncsoft.com
               designation: Software Engineer
-              description: Real-Time-Streaming platform based on OBS(Open Broadcaster Software), WebRTC and Qt
+              description: OBS, WebRTC, Qt를 기반으로한 데스크톱 실시간 게임방송 플랫폼
               visibility: true
             - company_name: Hanwha Systems
               company_logo: hanwha.png
               company_url: https://www.hanwhasystems.com
               designation: Software Engineer
-              description: Under water Robot Software base on ROS(Robot Operating System), MFC and Qt
+              description: 방위산업용 수중 로봇(Under water Robot) 소프트웨어 제작
               visibility: true
             - company_name: Samsung Thales
               company_logo: samsung.png
               company_url: https://www.hanwhasystems.com
               designation: Software Engineer
-              description: Under water Robot Software base on ROS(Robot Operating System), MFC and Qt
+              description: 방위산업용 수중 로봇(Under water Robot) 소프트웨어 제작
               visibility: true
 
 # Education
@@ -60,7 +60,7 @@ author_education_details:
               - college_logo: cnu.png
                 college_name: Chungnam National University
                 college_url: https://cnu.ac.kr
-                college_degree: EE Engineer
+                college_degree: 전자공학(정보통신)
                 description: Bachelor of Technology
                 visibility: true
 
