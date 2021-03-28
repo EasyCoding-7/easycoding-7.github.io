@@ -87,3 +87,9 @@ WebRTC:
    username: WebRTC
    avatar: webrtc.png
    bio: "This is WebRTC author."
+
+DirectX:
+  name: DirectX
+  username: DirectX
+  avatar: directx.png
+  bio: "This is DirectX author."
