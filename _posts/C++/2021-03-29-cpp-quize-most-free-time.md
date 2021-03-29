@@ -24,6 +24,25 @@ Input: {"12:15PM-02:00PM","09:00AM-12:11PM","02:02PM-04:00PM"}
 Output: 00:04
 ```
 
+* [Test Link](https://ideone.com/)
+
+```cpp
+#include <iostream>
+using namespace std;
+
+string MostFreeTime(string strArr[], int n) {
+  return "";
+}
+
+int main() {
+
+  string A[] = {"12:15PM-02:00PM","09:00AM-10:00AM","10:30AM-12:00PM"};
+  int arrLength = sizeof(A) / sizeof(*A);
+  cout << MostFreeTime(A, arrLength);
+  return 0;
+}
+```
+
 ---
 
 ## A
