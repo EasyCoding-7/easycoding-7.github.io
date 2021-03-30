@@ -29,6 +29,29 @@ Output: 121426
 
 ## A
 
+* [Test Link](https://ideone.com/)
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int LookSaySequence(int num) {
+  
+  // code goes here  
+  
+  return num;
+}
+
+int main(void) { 
+   
+  // keep this function call here
+  cout << LookSaySequence(1211);
+  return 0;
+    
+}
+```
+
 ```cpp
     for(size_t j=i+1;j<number.length();j++)
     {
