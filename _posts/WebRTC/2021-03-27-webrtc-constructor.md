@@ -6,7 +6,7 @@ author: WebRTC
 date: '2021-03-27 0:00:00 +0000'
 category: ['WebRTC']
 #tags: ['C++', 'tag-test1']
-thumbnail: /assets/img/posts/hello.jpg
+thumbnail: /assets/img/posts/webrtc-thumnail.webp
 #keywords: ['weak_ptr']
 usemathjax: true
 permalink: /blog/WebRTC/constructor/
