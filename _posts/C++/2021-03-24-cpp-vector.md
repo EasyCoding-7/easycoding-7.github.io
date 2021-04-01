@@ -6,7 +6,7 @@ author: C++
 date: '2021-03-24 0:00:00 +0000'
 category: ['Cpp']
 #tags: ['C++', 'tag-test1']
-thumbnail: /assets/img/posts/hello.jpg
+thumbnail: /assets/img/posts/cpp-thumnail.png
 keywords: ['vector']
 usemathjax: false
 permalink: /blog/cpp/vector/

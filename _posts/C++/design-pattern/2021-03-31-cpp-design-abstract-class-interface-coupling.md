@@ -6,7 +6,7 @@ author: C++
 date: '2021-03-31 0:00:00 +0000'
 category: ['Cpp', 'Design-pattern']
 #tags: ['C++', 'tag-test1']
-thumbnail: /assets/img/posts/hello.jpg
+thumbnail: /assets/img/posts/cpp-thumnail.png
 #keywords: ['C++ 글올리기', 'kw-test1']
 usemathjax: false
 permalink: /blog/design-pattern/abstract-interface-coupling/
