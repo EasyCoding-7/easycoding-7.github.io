@@ -93,3 +93,9 @@ DirectX:
   username: DirectX
   avatar: directx.png
   bio: "This is DirectX author."
+
+win32:
+  name: win32
+  username: win32
+  avatar: win32.png
+  bio: "This is Win32 author."
