@@ -1,0 +1,110 @@
+---
+layout: post
+title:  "(C++ : Design-pattern) Builder Pattern"
+summary: ""
+author: C++
+date: '2021-04-03 0:00:00 +0000'
+category: ['Cpp', 'Design-pattern']
+#tags: ['C++', 'tag-test1']
+thumbnail: /assets/img/posts/cpp-thumnail.png
+#keywords: ['C++ 글올리기', 'kw-test1']
+usemathjax: false
+permalink: /blog/design-pattern/builder-pattern/
+---
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+// 입학 지원서
+using Application = string;     // class Application을 대신한다.
+
+// 지원서 만드는 클래스
+class Director
+{
+    string name = "HONG";
+    string phone = "010-111-1111";
+    string address = "SEOUL KANGNAMGU";
+public:
+    Application construct()
+    {
+        Application app;
+        app += name + "\n";
+        app += phone + "\n";
+        app += address + "\n";
+        return app;
+    }
+
+    Application XMLconstruct()
+    {
+        Application app;
+        app += "<NAME>" + name + "</NAME>" + "\n";
+        app += phone + "\n";
+        app += address + "\n";
+        return app;
+    }
+    // 만약 지원서의 규약이 변경되어 address를빼야한다면???
+    // 모든 construct의 코드를 수정해야할까??
+};
+
+int main()
+{
+    Director d;
+
+    Application app = d.construct();
+    cout << app << endl;
+}
+```
+
+```cpp
+struct IBuilder
+{
+    virtual ~IBuilder() {}
+    virtual void makeName(sring name) = 0;
+    virtual void makePhone(string phone) = 0;
+    virtual void makeAddress(string addr) = 0;
+
+    virtual Application getResult() = 0;
+};
+
+class Director
+{
+    string name = "HONG";
+    string phone = "010-111-1111";
+    string address = "SEOUL KANGNAMGU";
+    IBuilder* pBuilder;
+public:
+    void setBuilder(IBuilder* p) { pBuilder = p; }
+    Application construct()
+    {
+        pBuilder->setName(name);
+        pBuilder->makePhone(name);
+        pBuilder->makeAddress(name);
+        return pBuilder->getResult;
+    }
+};
+
+class XMLBuilder : public IBuilder
+{
+    Application app;
+public:
+    vitual void makeName(string name)
+    {
+        app += "<NAME>" + name + "</NAME>\n";
+    }
+    // ...
+
+    vitual Application getResult() { return app; }
+};
+
+int main()
+{
+    Direct d;
+    XMLBuilder xb;
+    d.setBuilder(&xb);
+
+    Application app = d.construct();
+    cout << app << endl;
+}
+```

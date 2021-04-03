@@ -12,7 +12,6 @@ usemathjax: false
 permalink: /blog/design-pattern/visitor-pattern/
 ---
 
-
 ```cpp
 #include <iostream>
 #include <list>
