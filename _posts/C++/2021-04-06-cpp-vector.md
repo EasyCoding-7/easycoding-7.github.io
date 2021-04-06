@@ -114,6 +114,25 @@ int main()
 }
 ```
 
+아니 근데 erase, insert하기 왜이리 어렵게 만들어놨어???<br>
+vector자체를 erase, insert하면서 사용하라고 만든게 아님. 왜냐면 메모리 구조를 확인해보면 안다.
+
+```cpp
+// 좋은 erase
+for(vector<int>::iterator it = v.begin(); it != v.end();)
+{
+    int data = *it;
+    if(data == 3) 
+    {
+        it = v.erase(it);
+    }
+    else
+    {
+        ++it;
+    }
+}
+```
+
 ---
 
 ## Foreach활용
