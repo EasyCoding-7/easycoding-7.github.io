@@ -3,7 +3,7 @@ layout: post
 title:  "(C++) Vector"
 summary: ""
 author: C++
-date: '2021-03-24 0:00:00 +0000'
+date: '2021-04-06 0:00:00 +0000'
 category: ['Cpp']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/cpp-thumnail.png
@@ -11,6 +11,72 @@ keywords: ['vector']
 usemathjax: false
 permalink: /blog/cpp/vector/
 ---
+
+## vector 이론적 부분
+
+* vector의 동작 원리를 이해 한다.(size/capacity)
+* 중간 삽입/삭제를 이해한다.
+* 처음/끝 삽입/삭제를 이해한다.
+* 임의 접근을 이해한다.
+
+### vector의 동작 원리
+
+1. 여유분을 두고 메모리를 할당한다.
+2. 여유분까지 꽉 찼으면, 메모리를 증설한다.
+
+여기서 증설이라 함은 기존의 영역을 버리고 새로운 메모리를 할당함을 의미한다.
+
+그렇다면 의문점은
+
+1. 여유분은 얼마나 새로 할당해주는데?
+2. 증설은 얼마나 더 해주는데?
+3. 기존의 메모리는 어떻게 처리하는데?
+
+참고,
+
+* `size()` : 실제 데이터가 들어가 있는 메모리 수
+* `capacity()` : 여유분을 포함한 메모리 수
+
+```cpp
+// 이걸 한 번 실행해 보자
+
+vector<int> v;
+
+for(int i = 0; i < 1000; i++)
+{
+    v.push_back(100);
+    cout << v.size() << " " << v.capacity() << endl;
+}
+```
+
+처음에는 size, capacity가 동일하게 증가하다. 어느 순간부터 capacity가 훨씬 크게 증가한다.<br>
+대략적으로 capacity * 1.5만큼 capacity를 잡게되는데 이는 컴파일러에 따라 다르다.<br>
+
+1, 2번은 해결됐고, 기존메모리는 버려지고 새로운 메모리로 잡게 되는데... 새로운 메모리를 자주 잡을 수 록 낭비되는 자원도 함께 늘어난다. -> 처음에 메모리를 잘 잡자
+
+```cpp
+// iterator에 대해 잠깐보자
+
+vector<int> v(10);
+
+// vector<int>::size_type로 카운터 변수를 잡는다.
+for(vector<int>::size_type i = 0; i < v.size(); i++)
+{
+    // ...
+}
+
+vector<int>::iterator it;
+it = v.begin(); // iterator를 받는다
+cout << (*it) << endl;
+
+// const iterator로 받는 방법도 있다
+vector<int>::const_iterator cit1 = b.cbegin();
+*cit1 = 10; // error
+```
+
+---
+
+## vector 사용적 부분
 
 ## iterator 활용
 
