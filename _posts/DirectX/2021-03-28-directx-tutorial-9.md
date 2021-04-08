@@ -6,7 +6,7 @@ author: DirectX
 date: '2021-03-28 0:00:00 +0000'
 category: ['DirectX']
 #tags: ['C++', 'tag-test1']
-thumbnail: /assets/img/posts/hello.jpg
+thumbnail: /assets/img/posts/directx-thumnail.jpg
 keywords: ['tutorial']
 usemathjax: true
 permalink: /blog/DirectX/tutorial-9/
