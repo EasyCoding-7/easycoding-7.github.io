@@ -14,3 +14,11 @@ permalink: /blog/DirectX/basic-6/
 
 * [GetCode](https://github.com/EasyCoding-7/DirectX-Basic/tree/master/6)
 
+---
+
+네모를 그려보자.
+
+## index buffer
+
+![](/assets/img/posts/directx/basic-5-1.png){:class="img-fluid"}
+
