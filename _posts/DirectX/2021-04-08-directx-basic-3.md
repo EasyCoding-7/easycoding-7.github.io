@@ -16,52 +16,14 @@ permalink: /blog/DirectX/basic-3/
 
 ---
 
-## 우선 복습...
-
-이전에도 설명했듯 한 번에 모든것을 다 이해할수 없다. 일단은 받아들이자.
-
-```cpp
-#pragma once
-
-class Engine
-{
-public:
-
-	void Init(const WindowInfo& info);
-	void Render();
-
-public:
-	void RenderBegin();
-	void RenderEnd();
-
-	void ResizeWindow(int32 width, int32 height);
-
-private:
-	// 그려질 화면 크기 관련
-	WindowInfo		_window;
-	D3D12_VIEWPORT	_viewport = {};
-	D3D12_RECT		_scissorRect = {};
-
-	shared_ptr<class Device> _device;
-	shared_ptr<class CommandQueue> _cmdQueue;
-	shared_ptr<class SwapChain> _swapChain;
-	shared_ptr<class DescriptorHeap> _descHeap;
-};
-```
-
-Engine내에 Device, CommandQueue, SwapChain, DescriptorHeap클래스로 DirectX의 기능을 나눠둠<br>
-일반적으론 이렇게 나눠두지 않고 Engine내에서 모두 처리하나 이해를 돕기위해 나눠둠.<br>
-
-* Device : GPU에 접근, 리소스 요청등을 담당(인력사무소 대표)
-* CommandQueue : GPU에 처리를 요청할때 매번보내는게 아니라 queue에 담아서 보냄
-* SwapChain : 더블 버퍼링 담당
-* DescriptorHeap : View이고 리소스에 대한 설명을 담는다(받아들이자 일단)
-
----
-
 ## DescriptorHeap과 SwapChain을 합쳐보자
 
-둘을 굳이 나눠야 할 이유가 없기때문..
+생각해보면 둘의 기능이 유사하다.
+
+* DescriptorHeap : RenderTargetView 관리
+* SwapChain : RenderTarget 관리
+
+나눠 관리할 필요가 없다.
 
 ```cpp
 class SwapChain
@@ -84,7 +46,6 @@ private:
 private:
 	ComPtr<IDXGISwapChain>	_swapChain;
 	
-    // 우선 DescriptorHeap의 변수를 가져온다.
 	ComPtr<ID3D12Resource>			_rtvBuffer[SWAP_CHAIN_BUFFER_COUNT];
 	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;
 	D3D12_CPU_DESCRIPTOR_HANDLE		_rtvHandle[SWAP_CHAIN_BUFFER_COUNT];
@@ -94,17 +55,55 @@ private:
 ```
 
 ```cpp
+#include "pch.h"
+#include "SwapChain.h"
+
+
 void SwapChain::Init(const WindowInfo& info, ComPtr<ID3D12Device> device, ComPtr<IDXGIFactory> dxgi, ComPtr<ID3D12CommandQueue> cmdQueue)
 {
-    // SwapChain 생성
 	CreateSwapChain(info, dxgi, cmdQueue);
-
-    // ID3D12DescriptorHeap을 통해 Render Target View 생성
 	CreateRTV(device);
 }
-```
 
-```cpp
+void SwapChain::Present()
+{
+	// Present the frame.
+	_swapChain->Present(0, 0);
+}
+
+void SwapChain::SwapIndex()
+{
+	_backBufferIndex = (_backBufferIndex + 1) % SWAP_CHAIN_BUFFER_COUNT;
+}
+
+void SwapChain::CreateSwapChain(const WindowInfo& info, ComPtr<IDXGIFactory> dxgi, ComPtr<ID3D12CommandQueue> cmdQueue)
+{
+	// 이전에 만든 정보 날린다
+	_swapChain.Reset();
+
+	DXGI_SWAP_CHAIN_DESC sd;
+	sd.BufferDesc.Width = static_cast<uint32>(info.width); // 버퍼의 해상도 너비
+	sd.BufferDesc.Height = static_cast<uint32>(info.height); // 버퍼의 해상도 높이
+	sd.BufferDesc.RefreshRate.Numerator = 60; // 화면 갱신 비율
+	sd.BufferDesc.RefreshRate.Denominator = 1; // 화면 갱신 비율
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 버퍼의 디스플레이 형식
+	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	sd.SampleDesc.Count = 1; // 멀티 샘플링 OFF
+	sd.SampleDesc.Quality = 0;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // 후면 버퍼에 렌더링할 것 
+	sd.BufferCount = SWAP_CHAIN_BUFFER_COUNT; // 전면+후면 버퍼
+	sd.OutputWindow = info.hwnd;
+	sd.Windowed = info.windowed;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // 전면 후면 버퍼 교체 시 이전 프레임 정보 버림
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	dxgi->CreateSwapChain(cmdQueue.Get(), &sd, &_swapChain);
+
+	for (int32 i = 0; i < SWAP_CHAIN_BUFFER_COUNT; i++)
+		_swapChain->GetBuffer(i, IID_PPV_ARGS(&_rtvBuffer[i]));
+}
+
 void SwapChain::CreateRTV(ComPtr<ID3D12Device> device)
 {
 	// Descriptor (DX12) = View (~DX11)
@@ -134,7 +133,7 @@ void SwapChain::CreateRTV(ComPtr<ID3D12Device> device)
 }
 ```
 
-여기서 드는 의문, RenderTargetView는 뭔데? 일단 받아들이자 ...
+자세한 설명은 2장에서 모두했기에 생략.
 
 ---
 
@@ -169,7 +168,7 @@ public:
 
 ---
 
-## RootSignature Class
+## RootSignature 클래스
 
 ```cpp
 #pragma once
@@ -178,6 +177,11 @@ public:
 
 // CPU [        ]    GPU [        ]
 // 한국 [        ]   베트남 [       ]
+
+// CPU에서 처리할 데이터를 어떻게 해서든 GPU로 넘길 방안을 고려해야한다.
+// 우선 GPU에 메모리공간을 할당해야하고,
+// 이후 처리할 데이터를 CPU로 넘겨야한다.
+// 이런일을 담당할 클래스이다.
 
 class RootSignature
 {
@@ -198,7 +202,9 @@ private:
 void RootSignature::Init(ComPtr<ID3D12Device> device)
 {
 	D3D12_ROOT_SIGNATURE_DESC sigDesc = CD3DX12_ROOT_SIGNATURE_DESC(D3D12_DEFAULT);
-	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT; // 입력 조립기 단계
+	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT; 
+	// 입력 조립기 단계(INPUT_ASSEMBLER), 어떠한 일을 시키는 것이 아니라
+	// MOU정도라 생각, 그냥 이제 일할준비 하자! 이걸알린다.
 
 	ComPtr<ID3DBlob> blobSignature;
 	ComPtr<ID3DBlob> blobError;
@@ -211,7 +217,7 @@ void RootSignature::Init(ComPtr<ID3D12Device> device)
 
 ## Mesh 클래스
 
-Mesh : 정점의 모임
+* Mesh : 정점의 모임
 
 ```cpp
 // EnginePch.h
@@ -226,7 +232,7 @@ struct Vertex
 ```cpp
 #pragma once
 
-// [유니티짱]과 같이 정점으로 이루어진 물체
+// 정점으로 이루어진 물체 클래스
 class Mesh
 {
 public:
@@ -235,7 +241,11 @@ public:
 
 private:
 	ComPtr<ID3D12Resource>		_vertexBuffer;
+	// 실제리소스이고
+
 	D3D12_VERTEX_BUFFER_VIEW	_vertexBufferView = {};
+	// 리소스를 사용할 View이다.
+
 	uint32 _vertexCount = 0;
 };
 ```
@@ -254,6 +264,7 @@ void Mesh::Init(vector<Vertex>& vec)
 	D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 	D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
 
+	// GPU의 공간을 빌린다.
 	DEVICE->CreateCommittedResource(
 		&heapProperty,
 		D3D12_HEAP_FLAG_NONE,
@@ -266,9 +277,9 @@ void Mesh::Init(vector<Vertex>& vec)
     // _vertexBuffer는 GPU공간이라 그냥 복사가 불가능 아래의 과정이 필요하다
 	void* vertexDataBuffer = nullptr;
 	CD3DX12_RANGE readRange(0, 0); // We do not intend to read from this resource on the CPU.
-	_vertexBuffer->Map(0, &readRange, &vertexDataBuffer);
-	::memcpy(vertexDataBuffer, &vec[0], bufferSize);
-	_vertexBuffer->Unmap(0, nullptr);
+	_vertexBuffer->Map(0, &readRange, &vertexDataBuffer);	// GPU공간에 접근할 권한을 잠깐 갖는다.
+	::memcpy(vertexDataBuffer, &vec[0], bufferSize);		// 메모리 복사 후
+	_vertexBuffer->Unmap(0, nullptr);						// 권한을 다시 돌려줌
 
 	// Initialize the vertex buffer view.
 	_vertexBufferView.BufferLocation = _vertexBuffer->GetGPUVirtualAddress();
@@ -278,9 +289,49 @@ void Mesh::Init(vector<Vertex>& vec)
 
 void Mesh::Render()
 {
+	// 커멘드 리스트로 그리기를 요청함을 주목하자
 	CMD_LIST->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // Mesh가 어떤형태인지(기본은 삼각형(TRIANGLELIST))
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView); // Slot: (0~15)
 	CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0); // 그려줭
+}
+```
+
+```cpp
+// Mesh가 어떻게 사용되나 보자.
+
+#include "pch.h"
+#include "Game.h"
+#include "Engine.h"
+
+shared_ptr<Mesh> mesh = make_shared<Mesh>();
+shared_ptr<Shader> shader = make_shared<Shader>();
+
+void Game::Init(const WindowInfo& info)
+{
+	GEngine->Init(info);
+
+	vector<Vertex> vec(3);
+	vec[0].pos = Vec3(0.f, 0.5f, 0.5f);
+	vec[0].color = Vec4(1.f, 0.f, 0.f, 1.f);
+	vec[1].pos = Vec3(0.5f, -0.5f, 0.5f);
+	vec[1].color = Vec4(0.f, 1.0f, 0.f, 1.f);
+	vec[2].pos = Vec3(-0.5f, -0.5f, 0.5f);
+	vec[2].color = Vec4(0.f, 0.f, 1.f, 1.f);
+	mesh->Init(vec);
+
+	shader->Init(L"..\\Resources\\Shader\\default.hlsli");
+
+	GEngine->GetCmdQueue()->WaitSync();
+}
+
+void Game::Update()
+{
+	GEngine->RenderBegin();
+
+	shader->Update();
+	mesh->Render();
+
+	GEngine->RenderEnd();
 }
 ```
 
@@ -291,7 +342,7 @@ void Mesh::Render()
 ```cpp
 #pragma once
 
-// [일감 기술서] 외주 인력들이 뭘 해야할지 기술
+// [일감 기술서] 외주 인력(GPU)들이 뭘 해야할지 기술
 class Shader
 {
 public:
@@ -320,8 +371,12 @@ private:
 
 void Shader::Init(const wstring& path)
 {
-	CreateVertexShader(path, "VS_Main", "vs_5_0");  // 쉐이더파일 에서 VS_Main을 부른다.
-	CreatePixelShader(path, "PS_Main", "ps_5_0");   // 쉐이더파일 에서 PS_Main을 부른다.
+	CreateVertexShader(path, "VS_Main", "vs_5_0");  
+	// Vertex Shader : 쉐이더파일 에서 VS_Main을 부른다.
+	CreatePixelShader(path, "PS_Main", "ps_5_0");   
+	// Pixel Shader 쉐이더파일 에서 PS_Main을 부른다.
+
+	// Vertex가 초기 쉐이더 이후 Pixel Shader 처리 자세한 설명은 다음에
 
 	D3D12_INPUT_ELEMENT_DESC desc[] =
 	{
@@ -357,6 +412,7 @@ void Shader::CreateShader(const wstring& path, const string& name, const string&
 	compileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
+	// 쉐이더 파일을 읽어서 D3DCompileFromFile처리한면 각 쉐이더 블록(Blob)에 쉐이더가 들어간다.
 	if (FAILED(::D3DCompileFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
 		, name.c_str(), version.c_str(), compileFlag, 0, &blob, &_errBlob)))
 	{
@@ -399,54 +455,27 @@ VS_OUT VS_Main(VS_IN input)
     output.pos = float4(input.pos, 1.f);
     output.color = input.color;
 
+	// 입력들어온데로 거의 그대로 넘긴다
     return output;
 }
 
 float4 PS_Main(VS_OUT input) : SV_Target
 {
+	// 역시 들어온데로 거의그대로 넘긴다
     return input.color;
 }
 ```
 
 ---
 
-## 실행해 보기
+## 정리
 
-```cpp
-#include "pch.h"
-#include "Game.h"
-#include "Engine.h"
+* RootSignature : 그릴 준비를 해달라 요청하는 클래스라고 이해해 두자.
+* Mesh : 정점정보를 관리하는 클래스, 참고로 정점정보는 GPU에 메모리를 할당해 두고 CMD_LIST로 그리게 된다.
+* Shader : Vertext, Pixel등 쉐이더를 어떻게 처리할지 알려주는 클래스
 
-shared_ptr<Mesh> mesh = make_shared<Mesh>();
-shared_ptr<Shader> shader = make_shared<Shader>();
+---
 
-void Game::Init(const WindowInfo& info)
-{
-	GEngine->Init(info);
-
-	vector<Vertex> vec(3);
-	vec[0].pos = Vec3(0.f, 0.5f, 0.5f);
-	vec[0].color = Vec4(1.f, 0.f, 0.f, 1.f);
-	vec[1].pos = Vec3(0.5f, -0.5f, 0.5f);
-	vec[1].color = Vec4(0.f, 1.0f, 0.f, 1.f);
-	vec[2].pos = Vec3(-0.5f, -0.5f, 0.5f);
-	vec[2].color = Vec4(0.f, 0.f, 1.f, 1.f);
-	mesh->Init(vec);
-
-	shader->Init(L"..\\Resources\\Shader\\default.hlsli");
-
-	GEngine->GetCmdQueue()->WaitSync();
-}
-
-void Game::Update()
-{
-	GEngine->RenderBegin();
-
-	shader->Update();
-	mesh->Render();
-
-	GEngine->RenderEnd();
-}
-```
+## 실행 화면
 
 ![](/assets/img/posts/directx/basic-3-1.png){:class="img-fluid"}
