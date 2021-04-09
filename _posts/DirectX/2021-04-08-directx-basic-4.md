@@ -237,4 +237,74 @@ D3D12_GPU_VIRTUAL_ADDRESS ConstantBuffer::GetGpuVirtualAddress(uint32 index)
 }
 ```
 
+쉐이더에서 b0, b1을 처리하게 변경
+
+```cpp
+void Game::Update()
+{
+	GEngine->RenderBegin();
+
+	shader->Update();
+
+	{
+		Transform t;
+		t.offset = Vec4(0.75f, 0.f, 0.f, 0.f);
+		mesh->SetTransform(t);
+
+		mesh->Render();
+	}
+
+	{
+		Transform t;
+		t.offset = Vec4(0.f, 0.75f, 0.f, 0.f);
+		mesh->SetTransform(t);
+
+		mesh->Render();
+	}
+
+	GEngine->RenderEnd();
+}
+```
+
+```
+cbuffer TEST_B0 : register(b0)
+{
+    float4 offset0;
+};
+
+cbuffer TEST_B1 : register(b1)
+{
+    float4 offset1;
+};
+
+struct VS_IN
+{
+    float3 pos : POSITION;
+    float4 color : COLOR;
+};
+
+struct VS_OUT
+{
+    float4 pos : SV_Position;
+    float4 color : COLOR;
+};
+
+VS_OUT VS_Main(VS_IN input)
+{
+    VS_OUT output = (VS_OUT)0;
+
+    output.pos = float4(input.pos, 1.f);
+    output.pos += offset0;
+    output.color = input.color;
+    output.color += offset1;
+
+    return output;
+}
+
+float4 PS_Main(VS_OUT input) : SV_Target
+{
+    return input.color;
+}
+```
+
 ![](/assets/img/posts/directx/basic-4-2.png){:class="img-fluid"}
