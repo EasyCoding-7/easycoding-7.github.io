@@ -47,9 +47,10 @@ permalink: /blog/DirectX/basic-7/
 
 ## Texture Class
 
+Texture(2D)를 읽어오고 / DirectX 관리를 위한 Class
+
 ```cpp
 #pragma once
-
 
 class Texture
 {
@@ -156,6 +157,82 @@ void Texture::CreateView()
 }
 ```
 
+참고로 file system을 사용하려면 C++17을 Enable해줘야 하고,<br>
+C++17에는 BYTE가 std에 선언되어 있어 충돌이 나게되는데 BYTE를 사용안한다고 알려줘야한다.
+
+```cpp
+// EnginePch.h
+
+#pragma once
+
+// std::byte 사용하지 않음
+#define _HAS_STD_BYTE 0
+
+//...
+```
+
+Texture를 초기화 할때 커멘드 큐를 사용하는데 기존의 커멘드 큐의 경우 렌더 시작/종료에 종속적이니 렌더와 상관없이 동작하는 커멘드 큐를 새로 생성해 보자.
+
+```cpp
+#pragma once
+
+class SwapChain;
+class DescriptorHeap;
+
+class CommandQueue
+{
+	// ...
+
+	// 리소스를 읽는데 사용하는 커멘드
+	ComPtr<ID3D12CommandAllocator>		_resCmdAlloc;
+	ComPtr<ID3D12GraphicsCommandList>	_resCmdList;
+
+	// ...
+};
+```
+
+```cpp
+void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain)
+{
+	// ...
+
+	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_resCmdAlloc));
+	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _resCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&_resCmdList));
+
+	// ...
+```
+
+---
+
+## Texture처리를 위해서 Signature의 변경이 필요하다
+
+```cpp
+// EnginePch.h
+
+// ...
+
+enum class SRV_REGISTER : uint8
+{
+	t0 = static_cast<uint8>(CBV_REGISTER::END),
+	t1,
+	t2,
+	t3,
+	t4,
+
+	END
+};
+
+enum
+{
+	SWAP_CHAIN_BUFFER_COUNT = 2,
+	CBV_REGISTER_COUNT = CBV_REGISTER::END,
+	SRV_REGISTER_COUNT = static_cast<uint8>(SRV_REGISTER::END) - CBV_REGISTER_COUNT,
+	REGISTER_COUNT = CBV_REGISTER_COUNT + SRV_REGISTER_COUNT,
+};
+
+// ...
+```
+
 ```cpp
 void RootSignature::CreateRootSignature()
 {
@@ -163,6 +240,8 @@ void RootSignature::CreateRootSignature()
 	{
 		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, CBV_REGISTER_COUNT, 0), // b0~b4
 		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, SRV_REGISTER_COUNT, 0), // t0~t4
+
+		// SRV(Shader Resource View)
 
         // t0 ~ t4 추가
 	};
@@ -182,6 +261,135 @@ cbuffer TEST_B1 : register(b1)
 Texture2D tex_0 : register(t0);
 
 SamplerState sam_0 : register(s0);
+
+struct VS_IN
+{
+    float3 pos : POSITION;
+    float4 color : COLOR;
+    float2 uv : TEXCOORD;
+};
+
+struct VS_OUT
+{
+    float4 pos : SV_Position;
+    float4 color : COLOR;
+    float2 uv : TEXCOORD;
+};
+
+VS_OUT VS_Main(VS_IN input)
+{
+    VS_OUT output = (VS_OUT)0;
+
+    output.pos = float4(input.pos, 1.f);
+    output.color = input.color;
+    output.uv = input.uv;
+
+    return output;
+}
+
+float4 PS_Main(VS_OUT input) : SV_Target
+{
+	// 픽셀 쉐이더의 아웃풋은 texture의 인풋과 관련이 있을 것이다
+    float4 color = tex_0.Sample(sam_0, input.uv);
+    return color;
+}
+```
+
+```cpp
+void Shader::Init(const wstring& path)
+{
+	CreateVertexShader(path, "VS_Main", "vs_5_0");
+	CreatePixelShader(path, "PS_Main", "ps_5_0");
+
+	D3D12_INPUT_ELEMENT_DESC desc[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	};
+
+	// ...
+```
+
+```cpp
+void Game::Init(const WindowInfo& info)
+{
+	GEngine->Init(info);
+
+	vector<Vertex> vec(4);
+	vec[0].pos = Vec3(-0.5f, 0.5f, 0.5f);
+	vec[0].color = Vec4(1.f, 0.f, 0.f, 1.f);
+	vec[0].uv = Vec2(0.f, 0.f);
+	vec[1].pos = Vec3(0.5f, 0.5f, 0.5f);
+	vec[1].color = Vec4(0.f, 1.f, 0.f, 1.f);
+	vec[1].uv = Vec2(1.f, 0.f);
+	vec[2].pos = Vec3(0.5f, -0.5f, 0.5f);
+	vec[2].color = Vec4(0.f, 0.f, 1.f, 1.f);
+	vec[2].uv = Vec2(1.f, 1.f);
+	vec[3].pos = Vec3(-0.5f, -0.5f, 0.5f);
+	vec[3].color = Vec4(0.f, 1.f, 0.f, 1.f);
+	vec[3].uv = Vec2(0.f, 1.f);
+
+	vector<uint32> indexVec;
+	{
+		indexVec.push_back(0);
+		indexVec.push_back(1);
+		indexVec.push_back(2);
+	}
+	{
+		indexVec.push_back(0);
+		indexVec.push_back(2);
+		indexVec.push_back(3);
+	}
+
+	mesh->Init(vec, indexVec);
+
+	shader->Init(L"..\\Resources\\Shader\\default.hlsli");
+
+	texture->Init(L"..\\Resources\\Texture\\veigar.jpg");
+
+	GEngine->GetCmdQueue()->WaitSync();
+}
+
+void Game::Update()
+{
+	GEngine->RenderBegin();
+
+	shader->Update();
+
+	{
+		Transform t;
+		t.offset = Vec4(0.f, 0.f, 0.f, 0.f);
+		mesh->SetTransform(t);
+
+		mesh->SetTexture(texture);
+
+		mesh->Render();
+	}
+
+	GEngine->RenderEnd();
+}
+```
+
+```cpp
+void Mesh::Render()
+{
+	CMD_LIST->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView); // Slot: (0~15)
+	CMD_LIST->IASetIndexBuffer(&_indexBufferView);
+
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
+		GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b0);
+
+		// Texture를 넣는다.
+		GEngine->GetTableDescHeap()->SetSRV(_tex->GetCpuHandle(), SRV_REGISTER::t0);
+	}
+
+	GEngine->GetTableDescHeap()->CommitTable();
+
+	CMD_LIST->DrawIndexedInstanced(_indexCount, 1, 0, 0, 0);
+}
 ```
 
 ![](/assets/img/posts/directx/basic-7-1.png){:class="img-fluid"}
