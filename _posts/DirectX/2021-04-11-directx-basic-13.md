@@ -22,6 +22,8 @@ permalink: /blog/DirectX/basic-13/
 
 ## 호도법
 
+![](/assets/img/posts/directx/basic-13-3.png){:class="img-fluid"}
+
 ![](/assets/img/posts/directx/basic-13-4.png){:class="img-fluid"}
 
 ---
@@ -34,7 +36,7 @@ permalink: /blog/DirectX/basic-13/
 
 ## 코사인 법칙
 
-
+![](/assets/img/posts/directx/basic-13-6.png){:class="img-fluid"}
 
 ---
 
