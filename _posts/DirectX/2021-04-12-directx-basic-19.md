@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "(DirectX : Basic) 20. Camera"
+title:  "(DirectX : Basic) 19. Camera"
 summary: ""
 author: DirectX
 date: '2021-04-12 0:00:00 +0000'
@@ -9,7 +9,7 @@ category: ['DirectX']
 thumbnail: /assets/img/posts/directx-thumnail.jpg
 #keywords: ['tutorial']
 usemathjax: true
-permalink: /blog/DirectX/basic-20/
+permalink: /blog/DirectX/basic-19/
 ---
 
 * [GetCode](https://github.com/EasyCoding-7/DirectX-Basic/tree/master/13)
