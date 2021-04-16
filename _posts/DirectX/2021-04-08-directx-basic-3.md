@@ -133,8 +133,6 @@ void SwapChain::CreateRTV(ComPtr<ID3D12Device> device)
 }
 ```
 
-자세한 설명은 2장에서 모두했기에 생략.
-
 ---
 
 ## device, commandqueue, swapchain은 많이 사용되는데 좀더 쉽게 꺼내쓸수 있게 변경해보자.
@@ -168,85 +166,32 @@ public:
 
 ---
 
-## RootSignature 클래스
+## RootSignature
 
-```cpp
-#pragma once
+* [RootSignature에 대한 추가설명](https://ssinyoung.tistory.com/41)
 
-// [계약서 / 결재]
-
-// CPU [        ]    GPU [        ]
-// 한국 [        ]   베트남 [       ]
-
-// CPU에서 처리할 데이터를 어떻게 해서든 GPU로 넘길 방안을 고려해야한다.
-// 우선 GPU에 메모리공간을 할당해야하고,
-// 이후 처리할 데이터를 CPU로 넘겨야한다.
-// 이런일을 담당할 클래스이다.
-
-class RootSignature
-{
-public:
-	void Init(ComPtr<ID3D12Device> device);
-
-	ComPtr<ID3D12RootSignature>	GetSignature() { return _signature; }
-
-private:
-	ComPtr<ID3D12RootSignature>	_signature;
-};
-```
-
-```cpp
-#include "pch.h"
-#include "RootSignature.h"
-
-void RootSignature::Init(ComPtr<ID3D12Device> device)
-{
-	D3D12_ROOT_SIGNATURE_DESC sigDesc = CD3DX12_ROOT_SIGNATURE_DESC(D3D12_DEFAULT);
-	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT; 
-	// 입력 조립기 단계(INPUT_ASSEMBLER), 어떠한 일을 시키는 것이 아니라
-	// MOU정도라 생각, 그냥 이제 일할준비 하자! 이걸알린다.
-
-	ComPtr<ID3DBlob> blobSignature;
-	ComPtr<ID3DBlob> blobError;
-	::D3D12SerializeRootSignature(&sigDesc, D3D_ROOT_SIGNATURE_VERSION_1, &blobSignature, &blobError);
-	device->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&_signature));
-}
-```
+루트 서명(RootSignature)은 리소스(데이터)들을 각 그래픽스 파이프라인 셰이더에 전달한다<br>
+마치 매개변수를 함수에 전달하듯?(전달하는 방식은 많이 다르다)<br>
+설명만 봐선 이해가 안되는데 이후에 사용하면서 추가적으로 설명하겠음.<br>
 
 ---
 
 ## Mesh 클래스
 
-* Mesh : 정점의 모임
+* Mesh : 일단은 3D정점의 집합이라 생각하자
 
 ```cpp
-// EnginePch.h
-
-struct Vertex
-{
-	Vec3 pos;       // Vec3 : float이 3개
-	Vec4 color;     // Vec4 : float이 4개
-};
-```
-
-```cpp
-#pragma once
-
-// 정점으로 이루어진 물체 클래스
-class Mesh
-{
-public:
-	void Init(vector<Vertex>& vec);
-	void Render();
-
-private:
-	ComPtr<ID3D12Resource>		_vertexBuffer;
-	// 실제리소스이고
-
-	D3D12_VERTEX_BUFFER_VIEW	_vertexBufferView = {};
-	// 리소스를 사용할 View이다.
-
-	uint32 _vertexCount = 0;
+class Mesh 
+{ 
+public: 
+	void Init(vector<Vertex>& vec); 
+	void Render(); 
+private: 
+	ComPtr<ID3D12Resource>		_vertexBuffer; 
+	// GPU에 할당할 Mesh 메모리(리소스)
+	D3D12_VERTEX_BUFFER_VIEW	_vertexBufferView = {}; 
+	// 할당된 메모리(리소스)의 핸들(View)
+	uint32 _vertexCount = 0; 
 };
 ```
 
@@ -296,48 +241,11 @@ void Mesh::Render()
 }
 ```
 
-```cpp
-// Mesh가 어떻게 사용되나 보자.
-
-#include "pch.h"
-#include "Game.h"
-#include "Engine.h"
-
-shared_ptr<Mesh> mesh = make_shared<Mesh>();
-shared_ptr<Shader> shader = make_shared<Shader>();
-
-void Game::Init(const WindowInfo& info)
-{
-	GEngine->Init(info);
-
-	vector<Vertex> vec(3);
-	vec[0].pos = Vec3(0.f, 0.5f, 0.5f);
-	vec[0].color = Vec4(1.f, 0.f, 0.f, 1.f);
-	vec[1].pos = Vec3(0.5f, -0.5f, 0.5f);
-	vec[1].color = Vec4(0.f, 1.0f, 0.f, 1.f);
-	vec[2].pos = Vec3(-0.5f, -0.5f, 0.5f);
-	vec[2].color = Vec4(0.f, 0.f, 1.f, 1.f);
-	mesh->Init(vec);
-
-	shader->Init(L"..\\Resources\\Shader\\default.hlsli");
-
-	GEngine->GetCmdQueue()->WaitSync();
-}
-
-void Game::Update()
-{
-	GEngine->RenderBegin();
-
-	shader->Update();
-	mesh->Render();
-
-	GEngine->RenderEnd();
-}
-```
-
 ---
 
-## Shader 클래스
+## Shader
+
+* 각 정점사이를 어떻게 그릴지에 대한 정보를 관리하는 클래스
 
 ```cpp
 #pragma once
@@ -372,11 +280,12 @@ private:
 void Shader::Init(const wstring& path)
 {
 	CreateVertexShader(path, "VS_Main", "vs_5_0");  
-	// Vertex Shader : 쉐이더파일 에서 VS_Main을 부른다.
+	// Vertex Shader 쉐이더파일 에서 VS_Main을 부른다.
+	// vs_5_0 : GPU에게 Vertex를 어떻게 쉐이딩(그릴지) 알린다.
 	CreatePixelShader(path, "PS_Main", "ps_5_0");   
 	// Pixel Shader 쉐이더파일 에서 PS_Main을 부른다.
+	// ps_5_0 : GPU에게 Pixel(Vertex사이의)을 어떻게 쉐이딩(그릴지) 알린다.
 
-	// Vertex가 초기 쉐이더 이후 Pixel Shader 처리 자세한 설명은 다음에
 
 	D3D12_INPUT_ELEMENT_DESC desc[] =
 	{
@@ -403,33 +312,7 @@ void Shader::Init(const wstring& path)
 void Shader::Update()
 {
 	CMD_LIST->SetPipelineState(_pipelineState.Get());
-}
-
-void Shader::CreateShader(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob, D3D12_SHADER_BYTECODE& shaderByteCode)
-{
-	uint32 compileFlag = 0;
-#ifdef _DEBUG
-	compileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
-
-	// 쉐이더 파일을 읽어서 D3DCompileFromFile처리한면 각 쉐이더 블록(Blob)에 쉐이더가 들어간다.
-	if (FAILED(::D3DCompileFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-		, name.c_str(), version.c_str(), compileFlag, 0, &blob, &_errBlob)))
-	{
-		::MessageBoxA(nullptr, "Shader Create Failed !", nullptr, MB_OK);
-	}
-
-	shaderByteCode = { blob->GetBufferPointer(), blob->GetBufferSize() };
-}
-
-void Shader::CreateVertexShader(const wstring& path, const string& name, const string& version)
-{
-	CreateShader(path, name, version, _vsBlob, _pipelineDesc.VS);
-}
-
-void Shader::CreatePixelShader(const wstring& path, const string& name, const string& version)
-{
-	CreateShader(path, name, version, _psBlob, _pipelineDesc.PS);
+	// 쉐이더가 변경되어 파이프라인의 상태가 변경되었음을 알린다. 
 }
 ```
 
@@ -465,14 +348,6 @@ float4 PS_Main(VS_OUT input) : SV_Target
     return input.color;
 }
 ```
-
----
-
-## 정리
-
-* RootSignature : 그릴 준비를 해달라 요청하는 클래스라고 이해해 두자.
-* Mesh : 정점정보를 관리하는 클래스, 참고로 정점정보는 GPU에 메모리를 할당해 두고 CMD_LIST로 그리게 된다.
-* Shader : Vertext, Pixel등 쉐이더를 어떻게 처리할지 알려주는 클래스
 
 ---
 
