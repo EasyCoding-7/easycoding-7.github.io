@@ -77,7 +77,8 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 2. CPU의 데이터를 GPU 메모리에 데이터를 담는다
 3. GPU 레지스터가 GPU 메모리에서 읽어와 쉐이딩 단계에서 사용한다.
 
-1. 데이터를 담을 GPU 메모리 할당
+### 데이터를 담을 GPU 메모리 할당
+
 ```cpp
 // ConstantBuffer라는 클래스에서 담당
 void ConstantBuffer::Init(uint32 size, uint32 count) 
@@ -113,8 +114,8 @@ void ConstantBuffer::CreateBuffer()
 }
 ```
 
-2. GPU 메모리에 데이터를 담는다
-3. GPU 레지스터가 GPU 메모리에서 읽어와 쉐이딩 단계에서 사용한다.
+### GPU 메모리에 데이터를 담는다
+### GPU 레지스터가 GPU 메모리에서 읽어와 쉐이딩 단계에서 사용한다.
 
 ```cpp
 void Mesh::Render() 
