@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "(Unreal) 2-1 : Install"
+title:  "(Unreal : Basic) 2-1 : Install"
 summary: ""
 author: Unreal
 date: '2021-04-19 0:00:00 +0000'
@@ -25,4 +25,14 @@ permalink: /blog/Unreal/Basic-2-1/
 ---
 
 ## 프로젝트 생성
+
+![](/assets/img/posts/Unreal/basic-2-2.png){:class="img-fluid"}
+
+![](/assets/img/posts/Unreal/basic-2-3.png){:class="img-fluid"}
+
+![](/assets/img/posts/Unreal/basic-2-4.png){:class="img-fluid"}
+
+![](/assets/img/posts/Unreal/basic-2-5.png){:class="img-fluid"}
+
+VisualStudio와 동시에 실행된다.
 
