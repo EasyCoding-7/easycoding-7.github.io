@@ -14,11 +14,11 @@ permalink: /blog/Unreal/Basic-2-4/
 
 ## Blue Print를 이용해 Text Print 해보기
 
-![](/assets/img/posts/Unreal/basic-2-4-1.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-4-1.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-4-2.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-4-2.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-4-3.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-4-3.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-4-4.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-4-4.PNG){:class="img-fluid"}
 

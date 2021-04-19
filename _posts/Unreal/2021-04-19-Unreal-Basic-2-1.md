@@ -20,19 +20,19 @@ permalink: /blog/Unreal/Basic-2-1/
 
 ## 다운로드 및 인스톨
 
-![](/assets/img/posts/Unreal/basic-2-1.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-1.PNG){:class="img-fluid"}
 
 ---
 
 ## 프로젝트 생성
 
-![](/assets/img/posts/Unreal/basic-2-2.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-2.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-3.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-3.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-4.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-4.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-5.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-5.PNG){:class="img-fluid"}
 
 VisualStudio와 동시에 실행된다.
 

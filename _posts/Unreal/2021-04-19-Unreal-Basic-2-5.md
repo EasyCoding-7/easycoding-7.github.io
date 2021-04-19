@@ -12,10 +12,10 @@ usemathjax: false
 permalink: /blog/Unreal/Basic-2-5/
 ---
 
-![](/assets/img/posts/Unreal/basic-2-5-1.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-5-1.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-5-2.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-5-2.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-5-3.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-5-3.PNG){:class="img-fluid"}
 
-![](/assets/img/posts/Unreal/basic-2-5-4.png){:class="img-fluid"}
+![](/assets/img/posts/Unreal/basic-2-5-4.PNG){:class="img-fluid"}
