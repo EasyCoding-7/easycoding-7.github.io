@@ -132,4 +132,90 @@ void ConstantBuffer::CreateView()
 		DEVICE->CreateConstantBufferView(&cbvDesc, cbvHandle);
 	}
 }
+
+D3D12_CPU_DESCRIPTOR_HANDLE ConstantBuffer::PushData(int32 rootParamIndex, void* buffer, uint32 size)
+{
+	assert(_currentIndex < _elementSize);
+
+	::memcpy(&_mappedBuffer[_currentIndex * _elementSize], buffer, size);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = GetCpuHandle(_currentIndex);
+	
+	_currentIndex++;
+
+	return cpuHandle;
+}
+```
+
+여기까지하면 GPU에 메모리공간을 할당한거까지는 끝난다.<br>
+이제 할당된 GPU메모리에 데이터를 넣고, 다시 레지스터로 보내는것을 확인하면 끝<br>
+
+## TableDescriptorHeap
+
+```cpp
+void TableDescriptorHeap::Init(uint32 count)
+{
+	_groupCount = count;
+
+	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+	desc.NumDescriptors = count * REGISTER_COUNT;
+	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	DEVICE->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&_descHeap));
+
+	_handleSize = DEVICE->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	_groupSize = _handleSize * REGISTER_COUNT;
+}
+```
+
+GPU메모리에 데이터 넣기
+
+```cpp
+void TableDescriptorHeap::SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE srcHandle, CBV_REGISTER reg)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE destHandle = GetCPUHandle(reg);
+
+	uint32 destRange = 1;
+	uint32 srcRange = 1;
+	DEVICE->CopyDescriptors(1, &destHandle, &destRange, 1, &srcHandle, &srcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+```
+
+레지스터로 데이터 보내기
+
+```cpp
+void TableDescriptorHeap::CommitTable()
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = _descHeap->GetGPUDescriptorHandleForHeapStart();
+	handle.ptr += _currentGroupIndex * _groupSize;
+	CMD_LIST->SetGraphicsRootDescriptorTable(0, handle);
+
+	_currentGroupIndex++;
+}
+```
+
+```cpp
+void Mesh::Render()
+{
+	CMD_LIST->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView); // Slot: (0~15)
+
+	// TODO
+	// 1) Buffer에다가 데이터 세팅
+	// 2) TableDescHeap에다가 CBV 전달
+	// 3) 모두 세팅이 끝났으면 TableDescHeap 커밋
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
+		GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b0);
+	}
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
+		GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b1);
+	}
+
+	GEngine->GetTableDescHeap()->CommitTable();
+
+	CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
+}
 ```
