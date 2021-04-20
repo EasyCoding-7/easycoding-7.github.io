@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "(Unreal : Basic) 2-4 : Creating BluePrints"
+title:  "(Unreal : Basic) 2-5 : Creating BluePrints"
 summary: ""
 author: Unreal
 date: '2021-04-19 0:00:00 +0000'
