@@ -16,19 +16,13 @@ permalink: /blog/DirectX/basic-10/
 
 ---
 
-물체가 몇백 몇천개 라면 매번 Mesh, Texture, Shader를 호출하는 방식이 효율적이지 못하다.<br>
-이를 보완할 방법이 없을까??
-
-Mesh, Texture, Shader를 관리하는 클래스의 생성이 필요하다
-
 ## Material
 
-![](/assets/img/posts/directx/basic-10-1.png){:class="img-fluid"}
+Mesh에 관해서 다시 정리해보자면
 
-유니티를 예제로 보자면 Material을 생성 시 Shader를 선택, Texture 선택이 가능하다.<br>
-이런 Material을 만들어보자.
-
-Material내부에서 공통으로 사용할 GPU 레지스터(Constant Buffer)를 새롭게 할당해보자.
+* Mesh : 정점을 관리하는 클래스
+* Mesh는 정점을 관리하지 정점과 정점사이를 어떻게 그릴지(shader), 그림을 입힐지(texture), 옮길지(transform) 다른 클래스에서 관리하게 된다.
+* 정점정보를 제외한 그리기를 위한 클래스를 Material이라 하고 클래스를 만들어보자.
 
 ```cpp
 #pragma once

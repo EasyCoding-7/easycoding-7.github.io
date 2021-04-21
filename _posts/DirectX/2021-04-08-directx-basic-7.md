@@ -266,7 +266,8 @@ struct VS_IN
 {
     float3 pos : POSITION;
     float4 color : COLOR;
-    float2 uv : TEXCOORD;
+    float2 uv : TEXCOORD;	
+	// uv 좌표는 그림의 좌표를 말함 0~1까지 존재
 };
 
 struct VS_OUT
