@@ -18,63 +18,151 @@ Scale(사이즈), Rotation(회전), Translation(이동)에 대해 설명
 
 ## Translation
 
-우선 Translation에 대해 설명한다.
+[x, y, z]에 있는 물체를 [x+1, y+2, z+3]이동하고자 한다면?<br>
+[x, y, z] + [1, 2, 3] 너무 쉬운데??<br>
 
-예를들어 3차원 (0, 0, 0)에 한 물체가 있는데 (10, 15, 20)으로 이동을 하려 한다고 하자<br>
-간단하게 (x, y, z)에 (10, 15, 20)만 더하면 된다고 하지만, 만약 특정 포털(매트릭스)에 들어가면 이동하게 만들고자 한다면? v*M 벡터와 매트릭스의 곱이 된다.
+인생이 이렇게 쉬우면 좋겠지만 ... 우리는 효율성을 따져야한다.<br>
+Rotation, Scale등은 Matrix로 연산되기에 Translation또한 Matrix로 연산을해서 연산효율을 높이고 싶다<br>
+여기서 연산효율을 높인다는게 Matrix는 `(AB)C = A(BC)`와 같은 결합법칙이 성립하기에 연산 후 vector와 곱하는 형태의 연산처리가 가능
 
-![](/assets/img/posts/directx/basic-16-1.png){:class="img-fluid"}
+그렇담 어떻게 Translation을 Matrix로 표현이 가능할까?
 
-벡터와 매트릭스의 곱에선 (x, y, z)각 성분에 원하는 값을 각각 더하게 할 순 없다<br>
-그럼 어떤방식으로 Translation을 구현해야 할까?
+```
+// 우선 Vector를 아래와 같이 수정한다.
+// (내가 Translation 하고자하는 물체의 좌표마지막에 1을 추가)
+[x, y, z, 1]
 
-4차원(동차좌표계)으로 구현해보자.
+// 그리고 아래와 같은 Matrix를 하나 만든다.
+m11 m12 m13 m14
+m21 m22 m23 m24
+m31 m32 m33 m34
+m41 m42 m43 m44
+```
 
-![](/assets/img/posts/directx/basic-16-2.png){:class="img-fluid"}
+이제 Vector * Matrix를 해보면
 
-4차원 좌표계의 특징은 마지막 항(w)을 1로 둘 경우 m41, m42, m43에 x, y, z값을 표현할 수 있다.
+```
+X = x*m11 + y*m21 +z*m31 + m41
+Y = x*m12 + y*m22 +z*m32 + m42
+Z = x*m13 + y*m23 +z*m33 + m43
+W = x*m14 + y*m24 +z*m34 + m44
+```
 
-![](/assets/img/posts/directx/basic-16-3.png){:class="img-fluid"}
+여기까지하면 Matrix에 어떤값을 넣어야 할지 감이 온다.<br>
+내가 Translation 하고자 하는 좌표가 `(a, b ,c)`라면
 
-행렬의 m41, m42, m43에 translation 값을 넣으면 될꺼 같은데?
+```
+1 0 0 0 
+0 1 0 0
+0 0 1 0
+a b c 1
+```
 
-![](/assets/img/posts/directx/basic-16-4.png){:class="img-fluid"}
-
-그리고 자신의 항의 값만 남겨두면 되니 단위행렬로 만든다.
-
-![](/assets/img/posts/directx/basic-16-5.png){:class="img-fluid"}
-
-Translation 행렬이 완성이 된다.
+위와 같은 Matrix를 만들어 주면 되겠지?
 
 ---
 
 ## Scale
 
-(x, y, z)만큼의 배율로 커지게 만들고 싶다면?
+`(a배, b배 ,c배)`만큼 Scale하고 싶다면??
 
-이건 쉽기에 완성본만 보자
+```
+X = x*m11 + y*m21 +z*m31 + m41
+Y = x*m12 + y*m22 +z*m32 + m42
+Z = x*m13 + y*m23 +z*m33 + m43
+W = x*m14 + y*m24 +z*m34 + m44
+```
 
-![](/assets/img/posts/directx/basic-16-6.png){:class="img-fluid"}
+```
+a 0 0 0 
+0 b 0 0
+0 0 c 0
+0 0 0 1
+```
+
+너무 쉽다
 
 ---
 
 ## Rotation
 
-z축을 회전한다고 가정해보자.<br>
-z축이 고정되어 x, y만 있다고 가정하고 A를 B로 옮긴다고 생각해보자.<br>
-B의 X, Y는 아래와 같이 구할 수 있다.
+일단 x, y, z축이 모두 회전하는것을 가정하고 설명하면 설명이 너무 어려우니<br>
+z축 회전(빙글빙글 돌기만한다)을 기준으로 설명하겠다.
 
-![](/assets/img/posts/directx/basic-16-7.png){:class="img-fluid"}
+z축은 고정되어있기에 x, y만 고려하면되며 아래 그림의 A에서 B로 이동하는 것을 구한다고 생각하면 되겠다.
 
-![](/assets/img/posts/directx/basic-16-8.png){:class="img-fluid"}
+```
+(y)
+ |
+ |      B(x1, y1)
+ |
+ |           A(x, y) 
+ |
+ |--------------- (x)
+```
 
-좀더 공식을 단순화 해보자면
+일단 원점에서 A, B의 거리는 z축이 고정되어 있기에 같을것이기에 `d`라고 정의한다.<br>
+A점의 각도를 a라 할때 A점의 좌표를 표현해보자면 `(d*cos(a), d*sin(a))` 이라 표현이 가능하고<br>
+B점의 각도를 a+b라 할때 B점의 좌표를 표현해보자면 `(d*cos(a+b), d*sin(a+b))` 이라 표현이 가능하고<br>
+(참고로 b각도는 A, B점 사이의 각을 말함)
 
-![](/assets/img/posts/directx/basic-16-9.png){:class="img-fluid"}
+```
+// (d*cos(a+b), d*sin(a+b))는 아래와 같이 표현가능
 
-이걸 매트릭스에 반영하자면
+X = d*cos(a)*cos(b) - d*sin(a)*sin(b)
+Y = d*sin(a)*cos(b) - d*cos(a)*sin(b)
 
-![](/assets/img/posts/directx/basic-16-10.png){:class="img-fluid"}
+// 초기 좌표 (x, y) = (d*cos(a), d*sin(a)) 이기에
+
+X = x*cos(b) - y*sin(b)
+Y = y*cos(b) - x*sin(b)
+
+// 라고 식을 간단화 할 수 있다.
+```
+
+이제 이걸 Matrix로 표현만 하면 된다.
+
+```
+X = x*m11 + y*m21 +z*m31 + m41
+Y = x*m12 + y*m22 +z*m32 + m42
+Z = x*m13 + y*m23 +z*m33 + m43
+W = x*m14 + y*m24 +z*m34 + m44
+```
+
+이기에 
+
+```
+X = x*cos(b) - y*sin(b)
+Y = y*cos(b) - x*sin(b)
+```
+
+을 표현하려면
+
+```
+// z축 회전임을 기억
+cos(b) -sin(b) 0 0
+sin(b) cos(b)  0 0
+0      0       1 0
+0      0       0 1
+```
+
+나머지 x, y축 회전은
+
+```
+// x축 회전
+1 0      0       0
+0 cos(b) -sin(b) 0
+0 sin(b) cos(b)  0
+0 0      0       1
+```
+
+```
+// y축 회전
+cos(b)  0 sin(b) 0
+0       1 0      0
+-sin(b) 0 cos(b) 0
+0       0 0      1
+```
 
 ---
 
