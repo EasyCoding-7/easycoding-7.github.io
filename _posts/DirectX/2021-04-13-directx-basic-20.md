@@ -16,9 +16,9 @@ permalink: /blog/DirectX/basic-20/
 
 ---
 
-이제 코드가 많이 길어지기에 모든 코드를 넣지는 않음.
+이제부터 이제 코드가 많이 길어지기에 모든 코드를 넣지는 않음.
 
-## Cube & Sphere 오브젝트 생성
+Cube & Sphere 오브젝트를 생성해보자.
 
 ## Object
 
@@ -60,6 +60,7 @@ public:
 	// TODO : Instantiate
 
 protected:
+	// Resources 클래스에서는 Load, Save를 마음대로 사용가능
 	friend class Resources;
 
     // 리소스를 파일에서 받아오고 저장하게 만듦
