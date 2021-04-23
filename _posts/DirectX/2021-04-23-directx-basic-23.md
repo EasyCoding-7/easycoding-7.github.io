@@ -3,7 +3,7 @@ layout: post
 title:  "(DirectX : Basic) 23. Lighting-3"
 summary: ""
 author: DirectX
-date: '2021-04-15 0:00:00 +0000'
+date: '2021-04-23 0:00:00 +0000'
 category: ['DirectX']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/directx-thumnail.jpg

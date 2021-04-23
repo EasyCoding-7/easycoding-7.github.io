@@ -36,7 +36,8 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
 	vector<Vertex> vec(24);
 
 	// 앞면
-    // 한쪽면의 텍스쳐 내에 Normal값이 일정하니 빛 반사를 모두 일정하게 하며 평면적으로 보이게 된다.
+    // 한쪽면의 텍스쳐 내에 Normal Vector값이 일정하니 빛 반사를 모두 일정하게 하며 평면적으로 보이게 된다.
+    // 아래서 세 번째 요소가 Normal Vector이다
 	vec[0] = Vertex(Vec3(-w2, -h2, -d2), Vec2(0.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
 	vec[1] = Vertex(Vec3(-w2, +h2, -d2), Vec2(0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
 	vec[2] = Vertex(Vec3(+w2, +h2, -d2), Vec2(1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
@@ -53,38 +54,90 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
 이 Texture를 읽어서 빛 반사 연산을 하면 간단하지 않나??<br>
 이게 Normal-Mapping이다.
 
----
+여기서 혹시 궁금할꺼 같아 정리를 하자면 Normal-Mapping된 Texture의 색상은 왜 푸른가?<br>
+Normal-Mapping Texture의 경우 자체적인 좌표계 tangent좌표계를 사용한다<br>
+이 좌표계의 Up이 Blue로 매핑되어 있어 푸르게 나타나며,
 
-어떻게 동작하면 될까?
-
-```
-struct VS_IN
-{
-    float3 pos : POSITION;
-    float2 uv : TEXCOORD;       // 입력으로 uv값을 받아와 빛을 어떻게 반사할지 계산할때 사용하게 된다.
-    float3 normal : NORMAL;
-    float3 tangent : TANGENT;
-};
-```
-
-Vertext Shader에서 넘겨준 uv값을 Reasterizer를 통해 각 Pixel Shader에서 Pixel연산을 하게 되는데 그 때 Normal-Mapping된 이미지의 값을 쓰게 하면 될꺼 같다
-
-굿. 이제 구현만 남음 ... ;;;
+자체적인 좌표계를 쓰는 이유는 어느 한 좌표계 예를들어 Local, World 등에 영향을 받을 시<br>
+움직임에 따라 빛반사를 하는 것이아니라 해당좌표계에 따라 빛반사를 하기에 어색해 진다.
 
 ---
+
+그럼, Normal-Mapping Texture는 어떻게 동작하면 될까?
+
+```
+// Normal-Mapping Texture의 Tangent Space(좌표계)에서 View Space로 옮기려면
+// 아래 Matrix를 연산해주면된다.
+Tx Ty Tz
+Bx By Bz
+Nx Ny Nz
+```
 
 ```cpp
-struct MaterialParams
+shared_ptr<Scene> SceneManager::LoadTestScene()
 {
-	void SetInt(uint8 index, int32 value) { intParams[index] = value; }
-	void SetFloat(uint8 index, float value) { floatParams[index] = value; }
-	void SetTexOn(uint8 index, int32 value) { texOnParams[index] = value; }
+	// ...
 
-	array<int32, MATERIAL_INT_COUNT> intParams;
-	array<float, MATERIAL_FLOAT_COUNT> floatParams;
-	array<int32, MATERIAL_TEXTURE_COUNT> texOnParams;   // 텍스쳐를 사용할 것인가 체크
-    // 쉐이더 내부에서는 체크가 불가능
+    shared_ptr<Shader> shader = make_shared<Shader>();
+    shared_ptr<Texture> texture = make_shared<Texture>();
+    shared_ptr<Texture> texture2 = make_shared<Texture>();
+    shader->Init(L"..\\Resources\\Shader\\default.hlsli");
+    texture->Init(L"..\\Resources\\Texture\\Leather.jpg");
+    texture2->Init(L"..\\Resources\\Texture\\Leather_Normal.jpg");
+    // Normal Texture를 받는다
+```
+
+```
+cbuffer MATERIAL_PARAMS : register(b2)
+{
+    int     g_int_0;
+    int     g_int_1;
+    int     g_int_2;
+    int     g_int_3;
+    int     g_int_4;
+    float   g_float_0;
+    float   g_float_1;
+    float   g_float_2;
+    float   g_float_3;
+    float   g_float_4;
+
+    // 쉐이더에서는 Texutre의 null체크가 불가능하기에
+    // on이라는 변수를 두어 null인지 아닌지 확인한다.
+    int     g_tex_on_0;
+    int     g_tex_on_1;
+    int     g_tex_on_2;
+    int     g_tex_on_3;
+    int     g_tex_on_4;
 };
+```
+
+```cpp
+void SetTexture(uint8 index, shared_ptr<Texture> texture) 
+{ 
+    _textures[index] = texture;
+    // texture가 없다면 0 
+    // 있다면 1로 넣어달라
+    _params.SetTexOn(index, (texture == nullptr ? 0 : 1));
+}
+```
+
+```
+VS_OUT VS_Main(VS_IN input)
+{
+    VS_OUT output = (VS_OUT)0;
+
+    output.pos = mul(float4(input.pos, 1.f), g_matWVP);
+    output.uv = input.uv;
+
+    output.viewPos = mul(float4(input.pos, 1.f), g_matWV).xyz;
+
+    // normal, tangent, binormal을 넣는다
+    output.viewNormal = normalize(mul(float4(input.normal, 0.f), g_matWV).xyz);
+    output.viewTangent = normalize(mul(float4(input.tangent, 0.f), g_matWV).xyz);
+    output.viewBinormal = normalize(cross(output.viewTangent, output.viewNormal));
+
+    return output;
+}
 ```
 
 ```
@@ -101,6 +154,8 @@ float4 PS_Main(VS_OUT input) : SV_Target
         float3 tangentSpaceNormal = g_tex_1.Sample(g_sam_0, input.uv).xyz;
         // [0,1] 범위에서 [-1,1]로 변환
         tangentSpaceNormal = (tangentSpaceNormal - 0.5f) * 2.f;
+
+        // TBN 순서로 생성된 Matrix를 곱해주게 된다.
         float3x3 matTBN = { input.viewTangent, input.viewBinormal, input.viewNormal };
         viewNormal = normalize(mul(tangentSpaceNormal, matTBN));
     }
@@ -121,4 +176,4 @@ float4 PS_Main(VS_OUT input) : SV_Target
 
      return color;
 }
-````
+```
