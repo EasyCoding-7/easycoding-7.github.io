@@ -257,12 +257,25 @@ struct VS_OUT
 {
     float4 pos : SV_Position;
     float2 uv : TEXCOORD;
-    float3 viewPos : POSITION;  // view에 대한 위치
-    float3 viewNormal : NORMAL; // view의 normal 벡터
-    // view에 대한 정보를 왜 갖고있는지는 이후에 설명
+    float3 viewPos : POSITION;  // 빛이 딱 맞은 곳의 위치
+    float3 viewNormal : NORMAL; // 빛이 딱 맞은 곳의 노멀 벡터
 };
 
 // ...
+```
+
+```
+
+ (빛)(L)
+ \              (정반사)(R)
+  \      (N)      /
+   \      |      /
+    \     |     /
+     \    |    /
+      \(a)|   /
+       \  |  /
+--------------------------------------
+ (   빛이 맞은 곳   )
 ```
 
 ```
