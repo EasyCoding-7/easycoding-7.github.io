@@ -132,6 +132,7 @@ PS_OUT PS_Main(VS_OUT input)
         viewNormal = normalize(mul(tangentSpaceNormal, matTBN));
     }
 
+	// Texture 타겟에 데이터를 넣는다
     output.position = float4(input.viewPos.xyz, 0.f);
     output.normal = float4(viewNormal.xyz, 0.f);
     output.color = color;
@@ -140,11 +141,12 @@ PS_OUT PS_Main(VS_OUT input)
 }
 ```
 
+## RenderTargetGroup
+
 여러 랜더타겟을 뭉쳐서 사용하는 클래스를 생성
 
 ```cpp
-#pragma once
-#include "Texture.h"
+// RenderTargetGroup
 
 enum class RENDER_TARGET_GROUP_TYPE : uint8
 {
@@ -152,70 +154,11 @@ enum class RENDER_TARGET_GROUP_TYPE : uint8
 	G_BUFFER, // (위치(Geometry) 정보) POSITION, NORMAL, COLOR
 	END,
 };
-
-enum
-{
-	RENDER_TARGET_G_BUFFER_GROUP_MEMBER_COUNT = 3,
-	RENDER_TARGET_GROUP_COUNT = static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::END)
-};
-
-struct RenderTarget
-{
-	shared_ptr<Texture> target;
-	float clearColor[4];    // 초기값 색상
-};
-
-class RenderTargetGroup
-{
-public:
-	void Create(RENDER_TARGET_GROUP_TYPE groupType, vector<RenderTarget>& rtVec, shared_ptr<Texture> dsTexture);
-    // dsTexture : depth stencil texture
-
-	void OMSetRenderTargets(uint32 count, uint32 offset);
-	void OMSetRenderTargets();
-
-	void ClearRenderTargetView(uint32 index);
-	void ClearRenderTargetView();
-
-	shared_ptr<Texture> GetRTTexture(uint32 index) { return _rtVec[index].target; }
-	shared_ptr<Texture> GetDSTexture() { return _dsTexture; }
-
-private:
-	RENDER_TARGET_GROUP_TYPE		_groupType;
-	vector<RenderTarget>			_rtVec;
-	uint32							_rtCount;
-	shared_ptr<Texture>				_dsTexture;
-	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;
-
-private:
-	uint32							_rtvHeapSize;
-	D3D12_CPU_DESCRIPTOR_HANDLE		_rtvHeapBegin;
-	D3D12_CPU_DESCRIPTOR_HANDLE		_dsvHeapBegin;
-};
-```
-
-시작은 Create
-
-```cpp
-void Engine::CreateRenderTargetGroups()
-{
-	    // ...
-
-		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)] = make_shared<RenderTargetGroup>();
-		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)]->Create(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN, rtVec, dsTexture);
-        // rtVec : render target Vector
-        // dsTexture : depth stencil texture
-	}
-
-	    // ...
-
-		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)] = make_shared<RenderTargetGroup>();
-		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)]->Create(RENDER_TARGET_GROUP_TYPE::G_BUFFER, rtVec, dsTexture);
-	}
-}
 ```
 
 ```cpp
+// RenderTargetGroup
+
 void RenderTargetGroup::Create(RENDER_TARGET_GROUP_TYPE groupType, vector<RenderTarget>& rtVec, shared_ptr<Texture> dsTexture)
 {
 	_groupType = groupType;
@@ -248,6 +191,12 @@ void RenderTargetGroup::Create(RENDER_TARGET_GROUP_TYPE groupType, vector<Render
 	}
 }
 ```
+
+
+
+
+
+
 
 ```cpp
 #pragma once

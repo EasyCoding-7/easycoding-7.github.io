@@ -219,3 +219,80 @@ void Mesh::Render()
 	CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
 }
 ```
+
+---
+
+## 헷갈리는 부분 정리
+
+### GetCpuHandle ?? 뭘 받는건가
+
+```cpp
+// ConstantBuffer.cpp
+
+D3D12_CPU_DESCRIPTOR_HANDLE ConstantBuffer::GetCpuHandle(uint32 index)
+{
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(_cpuHandleBegin, index * _handleIncrementSize);
+}
+```
+
+```cpp
+// TableDescriptorHeap.cpp
+
+D3D12_CPU_DESCRIPTOR_HANDLE TableDescriptorHeap::GetCPUHandle(CBV_REGISTER reg)
+{
+	return GetCPUHandle(static_cast<uint32>(reg));
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE TableDescriptorHeap::GetCPUHandle(uint32 reg)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = _descHeap->GetCPUDescriptorHandleForHeapStart();
+	handle.ptr += _currentGroupIndex * _groupSize;
+	handle.ptr += reg * _handleSize;
+	return handle;
+}
+```
+
+결국 데이터를 올릴 레지스터의 DescriptorHeap의 주소를 리턴한다.
+
+어떻게 사용되나 보면
+
+```cpp
+void Mesh::Render()
+{
+	// ...
+
+	
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
+	GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b0);
+```
+
+```cpp
+D3D12_CPU_DESCRIPTOR_HANDLE ConstantBuffer::PushData(int32 rootParamIndex, void* buffer, uint32 size)
+{
+	assert(_currentIndex < _elementSize);
+
+	// _mapped된 ConstantBuffer에 데이터를 복사 후
+	::memcpy(&_mappedBuffer[_currentIndex * _elementSize], buffer, size);
+
+	// 복사된 핸들값을 리턴
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = GetCpuHandle(_currentIndex);
+	
+	_currentIndex++;
+
+	return cpuHandle;
+}
+```
+
+```cpp
+void TableDescriptorHeap::SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE srcHandle, CBV_REGISTER reg)
+{
+	// 현재 DesciptorHeap의 reg에 맞는 핸들을 받아서
+	D3D12_CPU_DESCRIPTOR_HANDLE destHandle = GetCPUHandle(reg);
+
+	uint32 destRange = 1;
+	uint32 srcRange = 1;
+
+	// 복사할 원본소스(src)의 데이터를 목적지(desHandle)로 복사
+	DEVICE->CopyDescriptors(1, &destHandle, &destRange, 1, &srcHandle, &srcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+```
