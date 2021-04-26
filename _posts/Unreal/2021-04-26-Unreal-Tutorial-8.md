@@ -12,7 +12,7 @@ usemathjax: false
 permalink: /blog/Unreal/Tutorial-8/
 ---
 
-* [참고사이트](https://www.youtube.com/watch?v=rI9auiWitYA&list=PLYQHfkihy4AxmwLN7Tn_958qChILAynw_&index=8)
+* [참고사이트](https://www.youtube.com/watch?v=afl0uIfsS7o&list=PLYQHfkihy4AxmwLN7Tn_958qChILAynw_&index=8)
 
 ---
 
