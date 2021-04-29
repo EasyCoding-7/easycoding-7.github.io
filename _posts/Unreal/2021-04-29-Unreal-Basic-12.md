@@ -53,10 +53,6 @@ Floater의 Blueprint 생성
 
 ![](/assets/img/posts/Unreal/basic-4-1-4.PNG){:class="img-fluid"}
 
-Cube를 Component로 추가해 보자.
-
-![](/assets/img/posts/Unreal/basic-4-1-5.PNG){:class="img-fluid"}
-
 ## StaticMesh를 추가해보자.
 
 ```cpp
@@ -86,4 +82,7 @@ AFloater::AFloater()
 
 ![](/assets/img/posts/Unreal/basic-4-1-6.PNG){:class="img-fluid"}
 
+Cube를 Component로 추가해 보자.
+
+![](/assets/img/posts/Unreal/basic-4-1-5.PNG){:class="img-fluid"}
 
