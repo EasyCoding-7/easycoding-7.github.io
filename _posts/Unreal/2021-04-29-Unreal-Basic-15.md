@@ -1,15 +1,15 @@
 ---
 layout: post
-title:  "(Unreal : Basic) 4-4 : F-Vectors 2"
+title:  "(Unreal : Basic) 15 : F-Vectors 2"
 summary: ""
 author: Unreal
-date: '2021-04-20 0:00:00 +0000'
+date: '2021-04-29 0:00:00 +0000'
 category: ['Unreal']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/thumbnail-Unreal.png
 #keywords: ['C++ 글올리기', 'kw-test1']
 usemathjax: false
-permalink: /blog/Unreal/Basic-4-4/
+permalink: /blog/Unreal/Basic-15/
 ---
 
 ```cpp
@@ -31,16 +31,7 @@ public:
 ![](/assets/img/posts/Unreal/basic-4-4-1.PNG){:class="img-fluid"}
 
 ```cpp
-// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
-
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Floater.generated.h"
-
-UCLASS()
-class FIRSTPROJECT_API AFloater : public AActor
+class BASIC_API AFloater : public AActor
 {
 	GENERATED_BODY()
 	
@@ -52,25 +43,16 @@ public:
 	UStaticMeshComponent* StaticMesh;
 
 	// Location use by SetActorLocation() when BegniPlay() is called
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "FloaterVectors")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Floater Variables")
 	FVector InitialLocation;
 
 	// Location of the Actor when dragged in from the editor
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "FloaterVectors")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Floater Variables")
 	FVector PlacedLocation;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Floater Variables")
+	// Init Floater Location
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Floater Variables")
 	bool bInitializerFloaterLocations;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-};
 ```
 
 ```cpp
@@ -114,3 +96,48 @@ void AFloater::Tick(float DeltaTime)
 }
 ```
 
+## Full Code
+
+```cpp
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Floater.generated.h"
+
+UCLASS()
+class BASIC_API AFloater : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	AFloater();
+
+	UPROPERTY(VisibleAnywhere, Category = "ActorMeshComponents")
+	UStaticMeshComponent* StaticMesh;
+
+	// Location use by SetActorLocation() when BegniPlay() is called
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Floater Variables")
+	FVector InitialLocation;
+
+	// Location of the Actor when dragged in from the editor
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Floater Variables")
+	FVector PlacedLocation;
+
+	// Init Floater Location
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Floater Variables")
+	bool bInitializerFloaterLocations;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+};
+```
