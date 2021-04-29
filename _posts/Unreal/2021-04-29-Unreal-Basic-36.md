@@ -3,7 +3,7 @@ layout: post
 title:  "(Unreal : Basic) 36. Charater Class-2"
 summary: ""
 author: Unreal
-date: '2021-04-28 0:00:00 +0000'
+date: '2021-04-29 0:00:00 +0000'
 category: ['Unreal']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/thumbnail-Unreal.png

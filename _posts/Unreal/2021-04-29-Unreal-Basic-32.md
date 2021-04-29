@@ -3,7 +3,7 @@ layout: post
 title:  "(Unreal : Basic) 32. Environment Assets"
 summary: ""
 author: Unreal
-date: '2021-04-28 0:00:00 +0000'
+date: '2021-04-29 0:00:00 +0000'
 category: ['Unreal']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/thumbnail-Unreal.png
@@ -21,6 +21,10 @@ permalink: /blog/Unreal/Basic-32/
 ---
 
 ## 태양의 사원 맵을 내 프로젝트로 Migrate(이주)
+
+우선 태양의 사원 맵 프로젝트 생성<br>
+폴더는 Contents아래에 이주하면 됨.<br>
+Map 폴더에서 우클릭 후 이주 선택<br>
 
 ![](/assets/img/posts/Unreal/Basic-32-3.PNG){:class="img-fluid"}
 

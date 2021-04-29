@@ -3,7 +3,7 @@ layout: post
 title:  "(Unreal : Basic) 25. Pawn Class"
 summary: ""
 author: Unreal
-date: '2021-04-27 0:00:00 +0000'
+date: '2021-04-29 0:00:00 +0000'
 category: ['Unreal']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/thumbnail-Unreal.png
@@ -168,4 +168,5 @@ ACritter::ACritter()
 
 ![](/assets/img/posts/Unreal/Basic-25-9.PNG){:class="img-fluid"}
 
-여기까지하면 Critter_BP를 기준으로 한 게임을 세팅 끝(이제 시작이다...)
+여기까지하면 Critter_BP를 기준으로 한 게임을 세팅 끝<br>
+이렇게 하면 내가 세팅한 Critter_BP를 기준으로 게임이 동작함.

@@ -3,7 +3,7 @@ layout: post
 title:  "(Unreal : Basic) 27. Pawn Movement Input-2"
 summary: ""
 author: Unreal
-date: '2021-04-28 0:00:00 +0000'
+date: '2021-04-29 0:00:00 +0000'
 category: ['Unreal']
 #tags: ['C++', 'tag-test1']
 thumbnail: /assets/img/posts/thumbnail-Unreal.png
@@ -22,7 +22,7 @@ permalink: /blog/Unreal/Basic-27/
 
 ![](/assets/img/posts/Unreal/Basic-27-4.PNG){:class="img-fluid"}
 
-다시 Pawn 클래스 생성
+충돌을 위한 Collider Pawn 클래스 생성
 
 ![](/assets/img/posts/Unreal/Basic-27-1.PNG){:class="img-fluid"}
 

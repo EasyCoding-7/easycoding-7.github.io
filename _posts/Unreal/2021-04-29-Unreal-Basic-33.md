@@ -14,6 +14,7 @@ permalink: /blog/Unreal/Basic-33/
 
 1. https://www.mixamo.com/ 에서 원하는 캐릭터를 하나 다운 받는다.
 2. Unreal에서 임포트한다.
+3. 임포트시 옵션선택창이 나오는데 그냥 오케이한다.
 
 ![](/assets/img/posts/Unreal/Basic-33-1.PNG){:class="img-fluid"}
 
