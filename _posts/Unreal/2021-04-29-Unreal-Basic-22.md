@@ -12,5 +12,35 @@ usemathjax: false
 permalink: /blog/Unreal/Basic-22/
 ---
 
+```cpp
+void AFloater::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	float InitialX = FMath::FRand();
+	float InitialY = FMath::FRand();
+	float InitialZ = FMath::FRand();
 
+	InitialLocation.X = InitialX;
+	InitialLocation.Y = InitialY;
+	InitialLocation.Z = InitialZ;
+	InitialLocation *= 20.f;
 
+    // ...
+```
+
+```cpp
+void AFloater::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	float InitialX = FMath::FRandRange(-500.f, 500.f);
+	float InitialY = FMath::FRandRange(-500.f, 500.f);
+	float InitialZ = FMath::FRandRange(-500.f, 500.f);
+
+	InitialLocation.X = InitialX;
+	InitialLocation.Y = InitialY;
+	InitialLocation.Z = InitialZ;
+
+    // ...
+```
