@@ -15,6 +15,24 @@ permalink: /blog/Unreal/Basic-12/
 여기서 부터 강의 시작이라 생각해도 좋음.<br>
 하나하나 다 따라와야함 뒤에서 다 사용됨.
 
+---
+
+## 프로젝트 세팅
+
+![](/assets/img/posts/Unreal/basic-12-1.PNG){:class="img-fluid"}
+
+![](/assets/img/posts/Unreal/basic-12-2.PNG){:class="img-fluid"}
+
+필요하다면 소스 컨트롤(Git) 생성
+
+![](/assets/img/posts/Unreal/basic-12-3.PNG){:class="img-fluid"}
+
+![](/assets/img/posts/Unreal/basic-12-4.PNG){:class="img-fluid"}
+
+![](/assets/img/posts/Unreal/basic-12-5.PNG){:class="img-fluid"}
+
+---
+
 ## 새로운 Actor C++ 클래스를 만들어보자.
 
 ![](/assets/img/posts/Unreal/basic-4-1-1.PNG){:class="img-fluid"}
