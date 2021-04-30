@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "(Unreal : Basic) 43. Floor Switch-2"
+title:  "(Unreal : Basic) 44. Floor Switch-3"
 summary: ""
 author: Unreal
 date: '2021-04-30 0:00:00 +0000'
@@ -9,50 +9,10 @@ category: ['Unreal']
 thumbnail: /assets/img/posts/thumbnail-Unreal.png
 #keywords: ['C++ 글올리기', 'kw-test1']
 usemathjax: false
-permalink: /blog/Unreal/Basic-43/
+permalink: /blog/Unreal/Basic-44/
 ---
 
-## 문을 움직이게 해보자.
-
-```cpp
-//...
-UCLASS()
-class BASIC_API AFloorSwitch : public AActor
-{
-	//...
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Floor Switch")
-	void RaiseDoor();
-
-    UFUNCTION(BlueprintImplementableEvent, Category = "Floor Switch")
-	void LowerDoor();
-};
-
-```
-
-```cpp
-//...
-
-void AFloorSwitch::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin."));
-	RaiseDoor();
-}
-
-void AFloorSwitch::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Overlap End."));
-	LowerDoor();
-}
-```
-
-![](/assets/img/posts/Unreal/Basic-43-1.PNG){:class="img-fluid"}
-
-문이 z축으로 날아간다.
-
----
-
-![](/assets/img/posts/Unreal/Basic-43-2.PNG){:class="img-fluid"}
+## 문이 너무 빨리 닫히니 딜레이를 좀 주자
 
 ```cpp
 // Fill out your copyright notice in the Description page of Project Settings.
@@ -92,6 +52,15 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Floor Switch")
 	FVector InitialSwitchLocation;
+
+	FTimerHandle SwitchHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Floor Switch")
+	float SwitchTime;
+
+	bool bCharacterOnSwitch;
+
+	void CloseDoor();
 
 public:	
 	// Sets default values for this actor's properties
@@ -162,6 +131,8 @@ AFloorSwitch::AFloorSwitch()
 
 	TriggerBox->SetBoxExtent(FVector(62.f, 62.f, 32.f));
 
+	SwitchTime = 2.0f;
+	bCharacterOnSwitch = false;
 }
 
 // Called when the game starts or when spawned
@@ -186,6 +157,7 @@ void AFloorSwitch::Tick(float DeltaTime)
 void AFloorSwitch::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin."));
+	if (!bCharacterOnSwitch) bCharacterOnSwitch = true;
 	RaiseDoor();
 	LowerFloorSwitch();
 }
@@ -193,8 +165,8 @@ void AFloorSwitch::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 void AFloorSwitch::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap End."));
-	LowerDoor();
-	RaiseFloorSwitch();
+	if (bCharacterOnSwitch) bCharacterOnSwitch = false;
+	GetWorldTimerManager().SetTimer(SwitchHandle, this, &AFloorSwitch::CloseDoor, SwitchTime);
 }
 
 void AFloorSwitch::UpdateDoorLocation(float Z)
@@ -209,5 +181,14 @@ void AFloorSwitch::UpdateFloorSwitchLocation(float Z)
 	FVector NewLocation = InitialSwitchLocation;
 	NewLocation.Z += Z;
 	FloorSwitch->SetWorldLocation(NewLocation);
+}
+
+void AFloorSwitch::CloseDoor()
+{
+	if (!bCharacterOnSwitch)
+	{
+		LowerDoor();
+		RaiseFloorSwitch();
+	}
 }
 ```
