@@ -25,6 +25,3 @@ permalink: /blog/Unreal/Basic-40/
 Main_BP의 애니메이션을 지정
 
 ![](/assets/img/posts/Unreal/Basic-40-4.PNG){:class="img-fluid"}
-
-
-
