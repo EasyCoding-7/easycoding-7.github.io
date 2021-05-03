@@ -6,7 +6,7 @@ author: Git
 date: '2021-05-03 0:00:00 +0000'
 category: ['Git']
 #tags: ['github-page', 'tag1-test1']
-thumbnail: /assets/img/posts/Git-thumbnail.jpg
+thumbnail: /assets/img/posts/Git-thumbnail.png
 #keywords: ['github-page 글올리기', 'kw-test1']
 usemathjax: false
 permalink: /blog/Git/how-to-use-ssh/
