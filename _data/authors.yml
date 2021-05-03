@@ -70,11 +70,11 @@ C++:
    avatar: cpp.svg
    bio: "This is cpp author."
 
-github-page:
-   name: github-page
-   username: github-page
-   avatar: github-page.png
-   bio: "This is github-page author."
+Git:
+   name: Git
+   username: Git
+   avatar: Git.png
+   bio: "This is Git author."
 
 Qt:
    name: Qt
