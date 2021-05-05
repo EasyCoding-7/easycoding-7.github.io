@@ -105,3 +105,9 @@ Unreal:
   username: Unreal
   avatar: Unreal.png
   bio: "This is Unreal author."
+
+Note:
+  name: Note
+  username: Note
+  avatar: Note.png
+  bio: "Just My Note!"
