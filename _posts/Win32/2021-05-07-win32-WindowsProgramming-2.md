@@ -12,10 +12,6 @@ usemathjax: false
 permalink: /blog/win32/WindowsProgramming-2/
 ---
 
-* [Get Code](https://github.com/EasyCoding-7/Win32Example.git)
-
----
-
 ## 테스트 환경
 
 * Intel CPU

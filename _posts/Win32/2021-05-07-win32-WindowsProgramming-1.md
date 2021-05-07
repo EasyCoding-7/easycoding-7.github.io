@@ -12,10 +12,6 @@ usemathjax: false
 permalink: /blog/win32/WindowsProgramming-1/
 ---
 
-* [Get Code](https://github.com/EasyCoding-7/Win32Example.git)
-
----
-
 ## VC++ 확장 문법 제거
 
 ```cpp
