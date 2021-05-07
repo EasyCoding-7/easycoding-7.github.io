@@ -335,3 +335,14 @@ _main:
 
 end
 ```
+
+---
+
+## 어셈블리로 빌드한 파일이 실행이 안된다.?
+
+1. _mainCRTStartup이 시작 위치인데 시작 함수가 없음.
+2. /entry 옵션에서 시작함수를 main으로 변경한다.
+
+```
+ml sample_asm.asm /link /entry:main
+```
