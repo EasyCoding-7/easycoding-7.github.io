@@ -11,7 +11,7 @@ thumbnail: /assets/img/posts/thumbnail-win32-api.png
 usemathjax: false
 permalink: /blog/win32/WindowsProgramming-30/
 ---
-
+ 
 ```cpp
 #include <Windows.h>
 #include <stdio.h>
