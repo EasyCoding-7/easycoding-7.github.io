@@ -28,7 +28,7 @@ urls:
 
 author_logo: profile.png
 author: Taehyung Kim
-author_bio: 안녕하세요? 8년차 현업 C++ 개발자 김태형이라고 합니다. 😁 많은 정보를 공유하고 싶습니다 👍 궁금하신 사항은 언제든 커멘트나 메일주시면 답변드리겠습니다. 😎
+author_bio: 안녕하세요? 8년차 현업 C++ 개발자 김태형이라고 합니다. 😁 C/C++을 사랑하며 다양한 사람과의 협업을 즐깁니다. ☕ 꾸준한 자기개발을 미덕이라 생각하며 노력중이며, 제가 얻은 지식을 홈페이지에 정리 중입니다. 좀 더 상세한 제 이력서를 원하신다면 메일주세요. 😎
 author_email: "taehyeong77@naver.com"
 author_location: Korea, Pangyo
 author_website_url: "https://8bitscoding.github.io/"
@@ -66,16 +66,11 @@ author_education_details:
 
 # Projects
 author_project_details:
-              - project_thumbnail: gamershub.png
-                project_title: Need to Change
-                project_description: Need to Change
-                project_url: https://gamershub.in
-                visibility: true
-              - project_thumbnail: hack4r.PNG
-                project_title: Need to Change
-                project_description: Need to Change
-                project_url: https://hack4r.com
-                visibility: true
+              #- project_thumbnail: gamershub.png
+                #project_title: Need to Change
+                #project_description: Need to Change
+                #project_url: https://gamershub.in
+                #visibility: true
 
 # social links
 #twitter_username: johndoe
