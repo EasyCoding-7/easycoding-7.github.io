@@ -111,3 +111,9 @@ Note:
   username: Note
   avatar: Note.png
   bio: "Just My Note!"
+
+OpenSource:
+  name: OpenSource
+  username: OpenSource
+  avatar: opensource.png
+  bio: "Just My OpenSource!"
