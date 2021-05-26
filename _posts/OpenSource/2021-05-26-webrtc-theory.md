@@ -44,10 +44,6 @@ permalink: /blog/opensource/WebRTC/theory/
 [PC2 : 192.168.0.20] -----/
 ```
 
-```
-[STUN]
-```
-
 ### STUN(Session Traversal Utilities for NAT) 서버
 
 * 클라이언트(자신)의 public ip(ip:port)를 알린다.
@@ -63,3 +59,25 @@ permalink: /blog/opensource/WebRTC/theory/
 
 * 해상도나 형식, 코덱, 암호화 등 컨텐츠의 설명
 * 정확히 말하면 프로토콜이 아님, peer간 연결을 위한 설명자료 정도이다.
+
+---
+
+## ICE 시나리오
+
+```
+        Alice                               Bob
+          |                                  |
+    <Create Offer>                           |
+<Set Local Description>                      |
+          |-----------(Send Offer)---------->|
+          |                      <Set Remote Description>
+          |                            <Create Answer>
+          |                       <Set Local Description>
+          |<----------(Send Answer)----------|
+<Set Remote Description>                     |
+          |                                  |
+          |-------(Send Ice Candidates)----->|
+          |<------(Send Ice Candidates)------|
+          |                                  |
+          |              (통신)              | 
+```
