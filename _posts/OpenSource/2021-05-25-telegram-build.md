@@ -12,7 +12,7 @@ usemathjax: true
 permalink: /blog/opensource/telegram/build/
 ---
 
-* [빌드 참고사이트](https://github.com/EasyCoding-7/tdesktop/blob/dev/docs/building-msvc.md)
+* [빌드 참고사이트](https://github.com/telegramdesktop/tdesktop/blob/dev/docs/building-msvc-x64.md)
 
 ---
 
@@ -28,6 +28,8 @@ permalink: /blog/opensource/telegram/build/
 * 만약 아래중 설치된게 있다면 생략해도 좋다
     * jom이 다운로드 되지 않는 경우가 있는데 qt를 설치하면 jom.exe가 자동으로설치되니 그 경로를 PATH에 넣어도 된다.
 
+* [Qt5](https://www.qt.io/download) : Download OpenSource User로 다운
+* [Visual Studio Qt확장]() : VisualStudio에서 설치
 * [Strawberry Perl](http://strawberryperl.com/) : `BuildPath\ThirdParty\Strawberry`
 * [NASM](http://www.nasm.us) : `BuildPath\ThirdParty\NASM`
 * [Yasm](http://yasm.tortall.net/Download.html) : rename to yasm.exe and put to `BuildPath\ThirdParty\yasm`
@@ -36,6 +38,7 @@ permalink: /blog/opensource/telegram/build/
 * [Python 2.7](https://www.python.org/downloads/) : `BuildPath\ThirdParty\Python27`
 * [CMake](https://cmake.org/download/) : `BuildPath\ThirdParty\cmake`
 * [Ninja](https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip) : unpack to `BuildPath\ThirdParty\Ninja`
+* [NuGet](https://dist.nuget.org/win-x86-commandline/latest/nuget.exe) : `BuildPath\ThirdParty\NuGet`
 * Git : 설명생략
 
 ## 3. BuildPath에 Make수행전 배치파일 생성
@@ -62,7 +65,7 @@ $ PrepareMake.bat
 
 ## 4. 환경변수 선언
 
-시스템환경변수에 gyp, ninga의 경로를 넣는다.
+시스템환경변수에 gyp, ninga, NuGet의 경로를 넣는다.
 
 ![](/assets/img/posts/opensource/telegram/build-2.png){:class="img-fluid"}
 
@@ -70,13 +73,21 @@ $ PrepareMake.bat
 
 `BuildPath\Make.bat`
 
+첫 줄
+
+```
+SET PATH=%cd%\ThirdParty\Strawberry\perl\bin;%cd%\ThirdParty\Python27;%cd%\ThirdParty\NASM;%cd%\ThirdParty\jom;%cd%\ThirdParty\cmake\bin;%cd%\ThirdParty\yasm;%PATH%
+```
+
+마지막에 자신의 msbuild.exe의 PATH를 넣는다
+
 ```
 SET PATH=%cd%\ThirdParty\Strawberry\perl\bin;%cd%\ThirdParty\Python27;%cd%\ThirdParty\NASM;%cd%\ThirdParty\jom;%cd%\ThirdParty\cmake\bin;%cd%\ThirdParty\yasm;%PATH%
 
 git clone --recursive https://github.com/telegramdesktop/tdesktop.git
 
-mkdir Libraries
-cd Libraries
+if not exist Libraries\win64 mkdir Libraries\win64
+cd Libraries\win64
 
 git clone https://github.com/desktop-app/patches.git
 cd patches
@@ -85,40 +96,40 @@ cd ..
 
 git clone https://github.com/desktop-app/lzma.git
 cd lzma\C\Util\LzmaLib
-msbuild LzmaLib.sln /property:Configuration=Debug /property:Platform="x86"
-msbuild LzmaLib.sln /property:Configuration=Release /property:Platform="x86"
+msbuild LzmaLib.sln /property:Configuration=Debug /property:Platform="x64"
+msbuild LzmaLib.sln /property:Configuration=Release /property:Platform="x64"
 cd ..\..\..\..
 
 git clone https://github.com/openssl/openssl.git openssl_1_1_1
 cd openssl_1_1_1
 git checkout OpenSSL_1_1_1-stable
-perl Configure no-shared no-tests debug-VC-WIN32
+perl Configure no-shared no-tests debug-VC-WIN64A
 nmake
-mkdir out32.dbg
-move libcrypto.lib out32.dbg
-move libssl.lib out32.dbg
-move ossl_static.pdb out32.dbg\ossl_static
+mkdir out64.dbg
+move libcrypto.lib out64.dbg
+move libssl.lib out64.dbg
+move ossl_static.pdb out64.dbg\ossl_static
 nmake clean
-move out32.dbg\ossl_static out32.dbg\ossl_static.pdb
-perl Configure no-shared no-tests VC-WIN32
+move out64.dbg\ossl_static out64.dbg\ossl_static.pdb
+perl Configure no-shared no-tests VC-WIN64A
 nmake
-mkdir out32
-move libcrypto.lib out32
-move libssl.lib out32
-move ossl_static.pdb out32
+mkdir out64
+move libcrypto.lib out64
+move libssl.lib out64
+move ossl_static.pdb out64
 cd ..
 
 git clone https://github.com/desktop-app/zlib.git
 cd zlib\contrib\vstudio\vc14
-msbuild zlibstat.vcxproj /property:Configuration=Debug /property:Platform="x86"
-msbuild zlibstat.vcxproj /property:Configuration=ReleaseWithoutAsm /property:Platform="x86"
+msbuild zlibstat.vcxproj /property:Configuration=Debug /property:Platform="x64"
+msbuild zlibstat.vcxproj /property:Configuration=ReleaseWithoutAsm /property:Platform="x64"
 cd ..\..\..\..
 
 git clone -b v4.0.1-rc2 https://github.com/mozilla/mozjpeg.git
 cd mozjpeg
 cmake . ^
     -G "Visual Studio 16 2019" ^
-    -A Win32 ^
+    -A x64 ^
     -DWITH_JPEG8=ON ^
     -DPNG_SUPPORTED=OFF
 cmake --build . --config Debug
@@ -131,11 +142,11 @@ git checkout openal-soft-1.21.0
 cd build
 cmake .. ^
     -G "Visual Studio 16 2019" ^
-    -A Win32 ^
+    -A x64 ^
     -D LIBTYPE:STRING=STATIC ^
     -D FORCE_STATIC_VCRT=ON
-msbuild OpenAL.vcxproj /property:Configuration=Debug
-msbuild OpenAL.vcxproj /property:Configuration=RelWithDebInfo
+msbuild OpenAL.vcxproj /property:Configuration=Debug /property:Platform="x64"
+msbuild OpenAL.vcxproj /property:Configuration=RelWithDebInfo /property:Platform="x64"
 cd ..\..
 
 git clone https://github.com/google/breakpad
@@ -147,24 +158,24 @@ git clone https://github.com/google/googletest testing
 cd client\windows
 gyp --no-circular-check breakpad_client.gyp --format=ninja
 cd ..\..
-ninja -C out/Debug common crash_generation_client exception_handler
-ninja -C out/Release common crash_generation_client exception_handler
+ninja -C out/Debug_x64 common crash_generation_client exception_handler
+ninja -C out/Release_x64 common crash_generation_client exception_handler
 cd tools\windows\dump_syms
 gyp dump_syms.gyp
-msbuild dump_syms.vcxproj /property:Configuration=Release
+msbuild dump_syms.vcxproj /property:Configuration=Release /property:Platform="x64"
 cd ..\..\..\..\..
 
 git clone https://github.com/telegramdesktop/opus.git
 cd opus
 git checkout tdesktop
 cd win32\VS2015
-msbuild opus.sln /property:Configuration=Debug /property:Platform="Win32"
-msbuild opus.sln /property:Configuration=Release /property:Platform="Win32"
+msbuild opus.sln /property:Configuration=Debug /property:Platform="x64"
+msbuild opus.sln /property:Configuration=Release /property:Platform="x64"
 
-cd ..\..\..\..
+cd ..\..\..\..\..
 SET PATH_BACKUP_=%PATH%
 SET PATH=%cd%\ThirdParty\msys64\usr\bin;%PATH%
-cd Libraries
+cd Libraries\win64
 
 git clone https://github.com/FFmpeg/FFmpeg.git ffmpeg
 cd ffmpeg
@@ -198,8 +209,8 @@ configure ^
     -no-opengl ^
     -openssl-linked ^
     -I "%LibrariesPath%\openssl_1_1_1\include" ^
-    OPENSSL_LIBS_DEBUG="%LibrariesPath%\openssl_1_1_1\out32.dbg\libssl.lib %LibrariesPath%\openssl_1_1_1\out32.dbg\libcrypto.lib Ws2_32.lib Gdi32.lib Advapi32.lib Crypt32.lib User32.lib" ^
-    OPENSSL_LIBS_RELEASE="%LibrariesPath%\openssl_1_1_1\out32\libssl.lib %LibrariesPath%\openssl_1_1_1\out32\libcrypto.lib Ws2_32.lib Gdi32.lib Advapi32.lib Crypt32.lib User32.lib" ^
+    OPENSSL_LIBS_DEBUG="%LibrariesPath%\openssl_1_1_1\out64.dbg\libssl.lib %LibrariesPath%\openssl_1_1_1\out64.dbg\libcrypto.lib Ws2_32.lib Gdi32.lib Advapi32.lib Crypt32.lib User32.lib" ^
+    OPENSSL_LIBS_RELEASE="%LibrariesPath%\openssl_1_1_1\out64\libssl.lib %LibrariesPath%\openssl_1_1_1\out64\libcrypto.lib Ws2_32.lib Gdi32.lib Advapi32.lib Crypt32.lib User32.lib" ^
     -I "%LibrariesPath%\mozjpeg" ^
     LIBJPEG_LIBS_DEBUG="%LibrariesPath%\mozjpeg\Debug\jpeg-static.lib" ^
     LIBJPEG_LIBS_RELEASE="%LibrariesPath%\mozjpeg\Release\jpeg-static.lib" ^
@@ -220,7 +231,7 @@ mkdir Debug
 cd Debug
 cmake -G Ninja ^
     -DCMAKE_BUILD_TYPE=Debug ^
-    -DTG_OWT_SPECIAL_TARGET=win ^
+    -DTG_OWT_SPECIAL_TARGET=win64 ^
     -DTG_OWT_LIBJPEG_INCLUDE_PATH=%cd%/../../../mozjpeg ^
     -DTG_OWT_OPENSSL_INCLUDE_PATH=%cd%/../../../openssl_1_1_1/include ^
     -DTG_OWT_OPUS_INCLUDE_PATH=%cd%/../../../opus/include ^
@@ -231,7 +242,7 @@ mkdir Release
 cd Release
 cmake -G Ninja ^
     -DCMAKE_BUILD_TYPE=Release ^
-    -DTG_OWT_SPECIAL_TARGET=win ^
+    -DTG_OWT_SPECIAL_TARGET=win64 ^
     -DTG_OWT_LIBJPEG_INCLUDE_PATH=%cd%/../../../mozjpeg ^
     -DTG_OWT_OPENSSL_INCLUDE_PATH=%cd%/../../../openssl_1_1_1/include ^
     -DTG_OWT_OPUS_INCLUDE_PATH=%cd%/../../../opus/include ^
@@ -241,6 +252,9 @@ cd ..\..\..
 ```
 
 ## 6. Build
+
+* cmake, pyhton27 시스템 path에 넣어야함.
+* 환경변수 `QT5_DIR` : `C:\Qt\5.12.11\msvc2017_64\lib\cmake\Qt5`
 
 `BuildPath\tdesktop\Telegram` 에서 아래를 실행
 
