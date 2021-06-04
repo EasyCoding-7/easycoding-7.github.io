@@ -36,7 +36,7 @@ permalink: /blog/Qt/Example/frameless/
 ## SetWindowPos
 
 * `SWP_NOOWNERZORDER` : Z순서를 변경하지 않음
-* `SWP_FRAMECHANGED` : SetWindowLong으로 경계선 스타일을 변경했을 경우 새 스타일을 적용, 
+* `SWP_FRAMECHANGED` : SetWindowLong으로 경계선 스타일을 변경했을 경우 새 스타일을 적용, 중요한건 이 메시지가 적용되면 크기가 변경되지 않아도 `WM_NCCALCSIZE`가 호출됨
 
 ---
 
