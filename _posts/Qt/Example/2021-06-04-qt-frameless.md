@@ -16,6 +16,9 @@ permalink: /blog/Qt/Example/frameless/
 
 * [참고사이트1](https://kaspyx.tistory.com/32)
 * [참고사이트2](https://mindgear.tistory.com/142)
+* [참고사이트3](https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=rodwls_&logNo=140166299173)
+
+    * [WM_NCCALCSIZE 참고](https://blog.naver.com/khyunmin82/60019068394)
 
 ---
 
