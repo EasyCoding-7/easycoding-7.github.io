@@ -112,3 +112,34 @@ int main()
 	thread_1.join();
 }
 ```
+
+---
+
+## 추가
+
+```cpp
+#include <iostream>
+#include <thread>
+using namespace std;
+
+void f1(int a, int b)
+{
+
+}
+
+int main()
+{
+    thread t1(&f1, 1, 2);
+    thread t2(bind(&f1, 1, 2));
+    // 둘 다 동일한 표현이다.
+
+    t1.join();
+    t2.join();
+}
+```
+
+```cpp
+int n = 10;
+thread t1(&f1, 1, n);            // error
+thread t1(&f1, 1, ref(n));       // ok
+```
