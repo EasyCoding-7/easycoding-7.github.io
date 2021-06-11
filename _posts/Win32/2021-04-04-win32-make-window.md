@@ -39,7 +39,6 @@ int CALLBACK WinMain(
 * CALLBACK : 윈도우에 의해서 호출을 당함을 의미
     * __cdecl : 실행 파일 크기 *크다* -> 호출자에 코드를 작성
     * __stdcall : 실행 파일 크기 *작다* -> 피호출자에 코드를 작성
-    *
 
 ![](/assets/img/posts/win32/dxd-basic-2-1.png){:class="img-fluid"}
 
